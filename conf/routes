@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET           /                     controllers.Application.hello()
+
+# Farmer
+GET           /farmer               controllers.farmer.FarmerController.findFarmer()
+POST          /farmer               controllers.farmer.FarmerController.insertFarmer()
+PUT           /farmer               controllers.farmer.FarmerController.updateFarmer()
+DELETE        /farmer               controllers.farmer.FarmerController.deleteFarmer()
+
+# Farmer Detail
+GET           /farmer/detail        controllers.farmer.FarmerDetailController.findFarmerDetail(farmer_id:Int)
+POST          /farmer/detail        controllers.farmer.FarmerDetailController.insertFarmerDetail()
+PUT           /farmer/detail        controllers.farmer.FarmerDetailController.updateFarmerDetail()
+DELETE        /farmer/detail        controllers.farmer.FarmerDetailController.deleteFarmerDetail()
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file         controllers.Assets.versioned(path="/public", file)
