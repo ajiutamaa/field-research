@@ -17,13 +17,13 @@ import static play.libs.Json.toJson;
  * Created by lenovo on 11/5/2015.
  */
 public class FarmerFieldController extends Controller {
-    private static final String[] FIELD_INSERT_FARMER_FIELD = {"farmer_id", "desa_id", "area", "ownership_status", "is_irrigated", "notes"};
-    private static final String[] FIELD_FARMER = {"farmer_id"};
+    private static final String[] FIELD_INSERT_FARMER_FIELD = {"farmer_id", "desa_id", "area", "ownership_status", "is_irrigated"};
+    private static final String[] FIELD_FARMER = {"field_id"};
 
     public static Result findFarmerField (int farmerId) {
         Map<String, Object> result = new HashMap<>();
         try {
-            return ok(toJson(FarmerField.selectOne(farmerId)));
+            return ok(toJson(FarmerField.select(farmerId)));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError (toJson(result));
@@ -43,15 +43,12 @@ public class FarmerFieldController extends Controller {
             farmerField.fieldArea = jsonNode.get("area").asDouble();
             farmerField.ownershipStatus = jsonNode.get("ownership_status").asText();
             farmerField.isIrrigated = jsonNode.get("is_irrigated").asBoolean();
-            farmerField.notes = jsonNode.get("notes").asText();
+            farmerField.notes = jsonNode.has("notes")? jsonNode.get("notes").asText() : null;
 
-            if (FarmerField.insert(farmerField) < 1) {
-                result.put("message", "error during insertion");
-                return internalServerError(toJson(result));
-            } else {
-                result.put("message", "detail of farmer " + farmerField.farmerId + " updated");
-                return ok(toJson(result));
-            }
+            farmerField.fieldId = FarmerField.insert(farmerField);
+            result.put("message", "farmer field inserted");
+            result.put("id", farmerField.fieldId);
+            return ok(toJson(result));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return badRequest(toJson(result));
@@ -65,8 +62,8 @@ public class FarmerFieldController extends Controller {
             InputValidator inputValidator = new InputValidator();
             inputValidator.checkInputFields(jsonNode, FIELD_FARMER);
 
-            int farmerId = jsonNode.get("farmer_id").asInt();
-            FarmerField farmerField = FarmerField.selectOne(farmerId);
+            int fieldId = jsonNode.get("field_id").asInt();
+            FarmerField farmerField = FarmerField.selectOne(fieldId);
 
             if (farmerField == null) {
                 result.put("message", "farmer field does not exist");
@@ -99,13 +96,13 @@ public class FarmerFieldController extends Controller {
             InputValidator inputValidator = new InputValidator();
             inputValidator.checkInputFields(jsonNode, FIELD_FARMER);
 
-            int farmerId = jsonNode.get("farmer_id").asInt();
+            int fieldId = jsonNode.get("field_id").asInt();
 
-            if (FarmerField.delete(farmerId) < 1) {
+            if (FarmerField.delete(fieldId) < 1) {
                 result.put("message", "error occured during deleting");
                 return internalServerError(toJson(result));
             } else {
-                result.put("message", "farmer " + farmerId + " deleted");
+                result.put("message", "farmer field " + fieldId + " deleted");
                 return ok(toJson(result));
             }
         } catch (Exception e) {

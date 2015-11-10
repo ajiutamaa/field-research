@@ -4,10 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import helpers.DB;
 import org.sql2o.Connection;
 
+import java.util.List;
+
 /**
  * Created by lenovo on 11/9/2015.
  */
 public class FarmerAsset {
+    @JsonProperty("asset_id")
+    public int assetId;
+
     @JsonProperty("farmer_id")
     public int farmerId;
 
@@ -23,28 +28,37 @@ public class FarmerAsset {
     @JsonProperty("quantity")
     public int quantity;
 
-    public static FarmerAsset selectOne (int farmerId) {
+    public static List<FarmerAsset> select (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT farmer_id AS farmerId, type, name, ownership_status AS ownershipStatus, quantity " +
+                "SELECT asset_id AS assetId, farmer_id AS farmerId, type, name, ownership_status AS ownershipStatus, quantity " +
                 "FROM farmer_asset WHERE farmer_id = :farmerId";
-            return con.createQuery(sql).addParameter("farmerId", farmerId).executeAndFetchFirst(FarmerAsset.class);
+            return con.createQuery(sql).addParameter("farmerId", farmerId).executeAndFetch(FarmerAsset.class);
+        }
+    }
+
+    public static FarmerAsset selectOne (int assetId) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql =
+                "SELECT asset_id AS assetId, farmer_id AS farmerId, type, name, ownership_status AS ownershipStatus, quantity " +
+                "FROM farmer_asset WHERE asset_id = :assetId";
+            return con.createQuery(sql).addParameter("assetId", assetId).executeAndFetchFirst(FarmerAsset.class);
         }
     }
 
     public static int insert (FarmerAsset farmerAsset) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "INSERT INTO farmer_asset (farmer_id, type, name, ownership_status, quantity) " +
-                            "VALUES (:farmerId, :type, :name, :ownershipStatus, :quantity)";
-            return con.createQuery(sql)
+                "INSERT INTO farmer_asset (farmer_id, type, name, ownership_status, quantity, created_at, updated_at) " +
+                "VALUES (:farmerId, :type, :name, :ownershipStatus, :quantity, NOW(), NOW())";
+            return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerAsset.farmerId)
                     .addParameter("type", farmerAsset.type)
                     .addParameter("name", farmerAsset.name)
                     .addParameter("ownershipStatus", farmerAsset.ownershipStatus)
                     .addParameter("quantity", farmerAsset.quantity)
                     .executeUpdate()
-                    .getResult();
+                    .getKey(Integer.class);
         }
     }
 
@@ -52,9 +66,9 @@ public class FarmerAsset {
         try (Connection con = DB.sql2o.open()) {
             String sql =
                 "UPDATE farmer_asset SET type = :type, name = :name, ownership_status = :ownershipStatus, " +
-                "quantity = :quantity, updated_at = CURRENT_TIMESTAMP WHERE farmer_id = :farmerId";
+                "quantity = :quantity, updated_at = CURRENT_TIMESTAMP WHERE asset_id = :assetId";
             return con.createQuery(sql)
-                    .addParameter("farmerId", farmerAsset.farmerId)
+                    .addParameter("assetId", farmerAsset.assetId)
                     .addParameter("type", farmerAsset.type)
                     .addParameter("name", farmerAsset.name)
                     .addParameter("ownershipStatus", farmerAsset.ownershipStatus)
@@ -64,10 +78,10 @@ public class FarmerAsset {
         }
     }
 
-    public static int delete (int farmerId) {
+    public static int delete (int assetId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM farmer_asset WHERE farmer_id = :farmerId";
-            return con.createQuery(sql).addParameter("farmerId", farmerId).executeUpdate().getResult();
+            String sql = "DELETE FROM farmer_asset WHERE farmer_id = :assetId";
+            return con.createQuery(sql).addParameter("assetId", assetId).executeUpdate().getResult();
         }
     }
 }

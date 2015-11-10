@@ -4,10 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import helpers.DB;
 import org.sql2o.Connection;
 
+import java.util.List;
+
 /**
  * Created by lenovo on 11/9/2015.
  */
 public class FarmerHarvest {
+    @JsonProperty("harvest_id")
+    public int harvestId;
+
     @JsonProperty("farmer_id")
     public int farmerId;
 
@@ -20,18 +25,28 @@ public class FarmerHarvest {
     @JsonProperty("crop")
     public String crop;
 
-    @JsonProperty("yield_area")
-    public double yieldArea;
+    @JsonProperty("field_area")
+    public double fieldArea;
 
     @JsonProperty("yield")
     public double yield;
 
-    public static FarmerHarvest selectOne (int farmerId) {
+    public static List<FarmerHarvest> select (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT farmer_id AS farmerId, year, season, crop, yield_area, yield " +
+                "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, yield_area, yield " +
                 "FROM farmer_harvest_history WHERE farmer_id = :farmerId";
             return con.createQuery(sql).addParameter("farmerId", farmerId)
+                    .executeAndFetch(FarmerHarvest.class);
+        }
+    }
+
+    public static FarmerHarvest selectOne (int harvestId) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql =
+                    "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, yield_area, yield " +
+                            "FROM farmer_harvest_history WHERE harvest_id = :harvestId";
+            return con.createQuery(sql).addParameter("harvestId", harvestId)
                     .executeAndFetchFirst(FarmerHarvest.class);
         }
     }
@@ -39,41 +54,41 @@ public class FarmerHarvest {
     public static int insert (FarmerHarvest farmerHarvest) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "INSERT INTO farmer_asset (farmer_id, year, season, crop, yield_area, yield) " +
-                "VALUES (:farmerId, :year, :season, :crop, :yieldArea, :yield)";
-            return con.createQuery(sql)
+                "INSERT INTO farmer_asset (farmer_id, year, season, crop, field_area, yield) " +
+                "VALUES (:farmerId, :year, :season, :crop, :fieldArea, :yield)";
+            return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerHarvest.farmerId)
                     .addParameter("year", farmerHarvest.year)
                     .addParameter("season", farmerHarvest.season)
                     .addParameter("crop", farmerHarvest.crop)
-                    .addParameter("yieldArea", farmerHarvest.yieldArea)
+                    .addParameter("fieldArea", farmerHarvest.fieldArea)
                     .addParameter("yield", farmerHarvest.yield)
                     .executeUpdate()
-                    .getResult();
+                    .getKey(Integer.class);
         }
     }
 
     public static int update (FarmerHarvest farmerHarvest) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "UPDATE farmer_asset SET year = :year, season = :season, crop = :crop, yield_area = :yieldArea, " +
-                "yield = :yield, updated_at = CURRENT_TIMESTAMP WHERE farmer_id = :farmerId";
+                "UPDATE farmer_asset SET year = :year, season = :season, crop = :crop, field_area = :fieldArea, " +
+                "yield = :yield, updated_at = CURRENT_TIMESTAMP WHERE harvest_id = :harvestId";
             return con.createQuery(sql)
-                    .addParameter("farmerId", farmerHarvest.farmerId)
+                    .addParameter("harvestId", farmerHarvest.harvestId)
                     .addParameter("year", farmerHarvest.year)
                     .addParameter("season", farmerHarvest.season)
                     .addParameter("crop", farmerHarvest.crop)
-                    .addParameter("yieldArea", farmerHarvest.yieldArea)
+                    .addParameter("fieldArea", farmerHarvest.fieldArea)
                     .addParameter("yield", farmerHarvest.yield)
                     .executeUpdate()
                     .getResult();
         }
     }
 
-    public static int delete (int farmerId) {
+    public static int delete (int harvestId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM farmer_harvest WHERE farmer_id = :farmerId";
-            return con.createQuery(sql).addParameter("farmerId", farmerId).executeUpdate().getResult();
+            String sql = "DELETE FROM farmer_harvest WHERE harvest_id = :harvestId";
+            return con.createQuery(sql).addParameter("harvestId", harvestId).executeUpdate().getResult();
         }
     }
 }

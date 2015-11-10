@@ -41,7 +41,6 @@ public class FarmerDetailController extends Controller {
             FarmerDetail farmerDetail = new FarmerDetail();
             farmerDetail.farmerId = jsonNode.get("farmer_id").asInt();
             farmerDetail.religion = (jsonNode.has("religion"))? jsonNode.get("religion").asText() : null;
-
             farmerDetail.nameOfSpouse = (jsonNode.has("name_of_spouse"))? jsonNode.get("name_of_spouse").asText() : null;
             farmerDetail.numOfDependants = (jsonNode.has("number_of_dependants"))? jsonNode.get("number_of_dependants").asInt() : null;
             farmerDetail.numOfChildren = (jsonNode.has("number_of_children"))? jsonNode.get("number_of_children").asInt() : null;
