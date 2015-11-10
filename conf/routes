@@ -17,5 +17,19 @@ POST          /farmer/detail        controllers.farmer.FarmerDetailController.in
 PUT           /farmer/detail        controllers.farmer.FarmerDetailController.updateFarmerDetail()
 DELETE        /farmer/detail        controllers.farmer.FarmerDetailController.deleteFarmerDetail()
 
+# Farmer Field
+GET           /farmer/field         controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
+POST          /farmer/field         controllers.farmer.FarmerIncomeController.insertFarmerIncome()
+PUT           /farmer/field         controllers.farmer.FarmerIncomeController.updateFarmerIncome()
+DELETE        /farmer/field         controllers.farmer.FarmerIncomeController.deleteFarmer()
+
+# Farmer Income
+GET           /farmer/income        controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
+POST          /farmer/income        controllers.farmer.FarmerIncomeController.insertFarmerIncome()
+PUT           /farmer/income        controllers.farmer.FarmerIncomeController.updateFarmerIncome()
+DELETE        /farmer/income        controllers.farmer.FarmerIncomeController.deleteFarmer()
+
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file         controllers.Assets.versioned(path="/public", file)
