@@ -45,7 +45,7 @@ POST           /farmer/income/delete              controllers.farmer.FarmerIncom
 GET            /farmer/asset/find                 controllers.farmer.FarmerAssetController.findFarmerAsset(farmer_id:Int)
 POST           /farmer/asset/insert               controllers.farmer.FarmerAssetController.insertFarmerAsset()
 POST           /farmer/asset/update               controllers.farmer.FarmerAssetController.updateFarmerAsset()
-POST           /farmer/asset/del                  controllers.farmer.FarmerAssetController.deleteFarmerAsset()
+POST           /farmer/asset/delete               controllers.farmer.FarmerAssetController.deleteFarmerAsset()
 
 # Farmer Workshop
 GET            /farmer/workshop/find              controllers.farmer.FarmerWorkshopController.findFarmerWorkshop(farmer_id:Int)
