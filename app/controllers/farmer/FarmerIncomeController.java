@@ -2,7 +2,6 @@ package controllers.farmer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
-import models.farmer.FarmerField;
 import models.farmer.FarmerIncome;
 import play.mvc.Controller;
 import play.mvc.Result;

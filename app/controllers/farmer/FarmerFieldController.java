@@ -2,12 +2,10 @@ package controllers.farmer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
-import models.farmer.Farmer;
 import models.farmer.FarmerField;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
