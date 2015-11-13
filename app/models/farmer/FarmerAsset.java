@@ -80,7 +80,7 @@ public class FarmerAsset {
 
     public static int delete (int assetId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM farmer_asset WHERE farmer_id = :assetId";
+            String sql = "DELETE FROM farmer_asset WHERE asset_id = :assetId";
             return con.createQuery(sql).addParameter("assetId", assetId).executeUpdate().getResult();
         }
     }
