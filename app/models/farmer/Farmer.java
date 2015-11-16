@@ -35,6 +35,15 @@ public class Farmer {
     @JsonProperty("desa_name")
     public String desaName;
 
+    @JsonProperty("kecamatan_id")
+    public int kecamatanId;
+
+    @JsonProperty("kabupaten_id")
+    public int kabupatenId;
+
+    @JsonProperty("provinsi_id")
+    public int provinsiId;
+
     @JsonProperty("observation_date")
     public Date observationDate;
 
@@ -43,9 +52,14 @@ public class Farmer {
             String sql =
                 "SELECT f.id AS farmerId, f.name AS farmerName, f.cluster_group_id AS clusterGroupId, f.kkv_group_id AS kkvGroupId, " +
                 "f.desa_id AS desaId, f.observation_date AS observationDate, " +
-                "cg.name AS clusterGroupName, kkv.name AS kkvGroupName, ds.name AS desaName " +
-                "FROM farmer f, cluster_group cg, farmer_kkv_group kkv, master_desa ds " +
-                "WHERE f.cluster_group_id = cg.id AND f.kkv_group_id = kkv.id AND f.desa_id = ds.id";
+                "cg.name AS clusterGroupName, kkv.name AS kkvGroupName, ds.name AS desaName, " +
+                "kc.id AS kecamatanId, kb.id AS kabupatenId, pv.id AS provinsiId " +
+                "FROM farmer f, cluster_group cg, farmer_kkv_group kkv, " +
+                    "master_desa ds, master_kecamatan kc, master_kabupaten kb, master_provinsi pv " +
+                "WHERE f.cluster_group_id = cg.id AND f.kkv_group_id = kkv.id " +
+                    "AND f.desa_id = ds.id AND ds.kecamatan_id = kc.id " +
+                    "AND kc.kabupaten_id = kb.id " +
+                    "AND kb.provinsi_id = pv.id";
             return con.createQuery(sql).executeAndFetch(Farmer.class);
         }
     }
