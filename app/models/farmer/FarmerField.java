@@ -19,6 +19,18 @@ public class FarmerField {
     @JsonProperty("desa_id")
     public int desaId;
 
+    @JsonProperty("desa_name")
+    public String desaName;
+
+    @JsonProperty("kecamatan_id")
+    public int kecamatanId;
+
+    @JsonProperty("kabupaten_id")
+    public int kabupatenId;
+
+    @JsonProperty("provinsi_id")
+    public int provinsiId;
+
     @JsonProperty("field_area")
     public double fieldArea;
 
@@ -34,9 +46,16 @@ public class FarmerField {
     public static List<FarmerField> select (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT field_id AS fieldId, farmer_id AS farmerId, location_desa_id AS desaId, area AS fieldArea, ownership_status AS ownershipStatus, " +
-                "is_irrigated AS isIrrigated, notes " +
-                "FROM farmer_field WHERE farmer_id = :farmerId";
+                "SELECT ff.field_id AS fieldId, ff.farmer_id AS farmerId, ff.location_desa_id AS desaId, ff.area AS fieldArea, " +
+                    "ff.ownership_status AS ownershipStatus, ds.name AS desaName, kc.id AS kecamatanId, " +
+                    "kb.id AS kabupatenId, pv.id AS provinsiId, " +
+                    "ff.is_irrigated AS isIrrigated, ff.notes " +
+                "FROM farmer_field ff, master_desa ds, master_kecamatan kc, master_kabupaten kb, master_provinsi pv " +
+                "WHERE " +
+                    "ff.farmer_id = :farmerId AND ff.location_desa_id = ds.id AND " +
+                    "ds.kecamatan_id = kc.id AND " +
+                    "kc.kabupaten_id = kb.id AND " +
+                    "kb.provinsi_id = pv.id";
             return con.createQuery(sql).addParameter("farmerId", farmerId).executeAndFetch(FarmerField.class);
         }
     }
