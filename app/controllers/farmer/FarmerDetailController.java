@@ -43,6 +43,8 @@ public class FarmerDetailController extends Controller {
             farmerDetail.numOfDependants = (jsonNode.has("number_of_dependants"))? jsonNode.get("number_of_dependants").asInt() : null;
             farmerDetail.numOfChildren = (jsonNode.has("number_of_children"))? jsonNode.get("number_of_children").asInt() : null;
             farmerDetail.residentialStatus = (jsonNode.has("residential_status"))? jsonNode.get("residential_status").asText() : null;
+            farmerDetail.education = (jsonNode.has("education"))? jsonNode.get("education").asText() : null;
+            farmerDetail.placeOfBirth = (jsonNode.has("place_of_birth"))? jsonNode.get("place_of_birth").asText() : null;
             farmerDetail.dateOfBirth = (jsonNode.has("date_of_birth"))? formatter.parse(jsonNode.get("date_of_birth").asText()) : null;
             farmerDetail.ethnicGroup = (jsonNode.has("ethnic_group"))? jsonNode.get("ethnic_group").asText() : null;
             farmerDetail.yearsOfCornFarming = (jsonNode.has("years_of_corn_farming"))? jsonNode.get("years_of_corn_farming").asInt() : null;
@@ -83,6 +85,8 @@ public class FarmerDetailController extends Controller {
             farmerDetail.numOfDependants = (jsonNode.has("number_of_dependants"))? jsonNode.get("number_of_dependants").asInt() : farmerDetail.numOfDependants;
             farmerDetail.numOfChildren = (jsonNode.has("number_of_children"))? jsonNode.get("number_of_children").asInt() : farmerDetail.numOfChildren;
             farmerDetail.residentialStatus = (jsonNode.has("residential_status"))? jsonNode.get("residential_status").asText() : farmerDetail.residentialStatus;
+            farmerDetail.education = (jsonNode.has("education"))? jsonNode.get("education").asText() : farmerDetail.education;
+            farmerDetail.placeOfBirth = (jsonNode.has("place_of_birth"))? jsonNode.get("place_of_birth").asText() : farmerDetail.placeOfBirth;
             farmerDetail.dateOfBirth = (jsonNode.has("date_of_birth"))? formatter.parse(jsonNode.get("date_of_birth").asText()) : farmerDetail.dateOfBirth;
             farmerDetail.ethnicGroup = (jsonNode.has("ethnic_group"))? jsonNode.get("ethnic_group").asText() : farmerDetail.ethnicGroup;
             farmerDetail.yearsOfCornFarming = (jsonNode.has("years_of_corn_farming"))? jsonNode.get("years_of_corn_farming").asInt() : farmerDetail.yearsOfCornFarming;
