@@ -34,7 +34,7 @@ public class FarmerHarvest {
     public static List<FarmerHarvest> select (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, yield_area, yield " +
+                "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, field_area AS fieldArea, yield " +
                 "FROM farmer_harvest_history WHERE farmer_id = :farmerId";
             return con.createQuery(sql).addParameter("farmerId", farmerId)
                     .executeAndFetch(FarmerHarvest.class);
@@ -44,7 +44,7 @@ public class FarmerHarvest {
     public static FarmerHarvest selectOne (int harvestId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, yield_area, yield " +
+                    "SELECT harvest_id AS harvestId, farmer_id AS farmerId, year, season, crop, field_area AS fieldArea, yield " +
                             "FROM farmer_harvest_history WHERE harvest_id = :harvestId";
             return con.createQuery(sql).addParameter("harvestId", harvestId)
                     .executeAndFetchFirst(FarmerHarvest.class);
@@ -54,7 +54,7 @@ public class FarmerHarvest {
     public static int insert (FarmerHarvest farmerHarvest) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "INSERT INTO farmer_asset (farmer_id, year, season, crop, field_area, yield) " +
+                "INSERT INTO farmer_harvest_history (farmer_id, year, season, crop, field_area, yield) " +
                 "VALUES (:farmerId, :year, :season, :crop, :fieldArea, :yield)";
             return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerHarvest.farmerId)
@@ -71,7 +71,7 @@ public class FarmerHarvest {
     public static int update (FarmerHarvest farmerHarvest) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "UPDATE farmer_asset SET year = :year, season = :season, crop = :crop, field_area = :fieldArea, " +
+                "UPDATE farmer_harvest_history SET year = :year, season = :season, crop = :crop, field_area = :fieldArea, " +
                 "yield = :yield, updated_at = CURRENT_TIMESTAMP WHERE harvest_id = :harvestId";
             return con.createQuery(sql)
                     .addParameter("harvestId", farmerHarvest.harvestId)
@@ -87,7 +87,7 @@ public class FarmerHarvest {
 
     public static int delete (int harvestId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM farmer_harvest WHERE harvest_id = :harvestId";
+            String sql = "DELETE FROM farmer_harvest_history WHERE harvest_id = :harvestId";
             return con.createQuery(sql).addParameter("harvestId", harvestId).executeUpdate().getResult();
         }
     }

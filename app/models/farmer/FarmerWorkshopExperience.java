@@ -51,7 +51,7 @@ public class FarmerWorkshopExperience {
     public static int insert (FarmerWorkshopExperience farmerWorkshopExperience) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "INSERT INTO farmer_asset (farmer_id, type, organizer, year, activity_description, created_at, updated_at) " +
+                "INSERT INTO farmer_workshop_experience (farmer_id, type, organizer, year, activity_description, created_at, updated_at) " +
                 "VALUES (:farmerId, :type, :organizer, :year, :description, NOW(), NOW())";
             return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerWorkshopExperience.farmerId)
@@ -67,7 +67,7 @@ public class FarmerWorkshopExperience {
     public static int update (FarmerWorkshopExperience farmerWorkshopExperience) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "UPDATE farmer_asset SET type = :type, organizer = :organizer, year = :year, " +
+                "UPDATE farmer_workshop_experience SET type = :type, organizer = :organizer, year = :year, " +
                 "activity_description = :description, updated_at = CURRENT_TIMESTAMP WHERE workshop_id = :workshopId";
             return con.createQuery(sql)
                     .addParameter("workshopId", farmerWorkshopExperience.workshopId)

@@ -15,7 +15,7 @@ import static play.libs.Json.toJson;
  * Created by lenovo on 11/5/2015.
  */
 public class FarmerFieldController extends Controller {
-    private static final String[] FIELD_INSERT_FARMER_FIELD = {"farmer_id", "desa_id", "area", "ownership_status", "is_irrigated"};
+    private static final String[] FIELD_INSERT_FARMER_FIELD = {"farmer_id", "desa_id", "field_area", "ownership_status", "is_irrigated"};
     private static final String[] FIELD_FARMER = {"field_id"};
 
     public static Result findFarmerField (int farmerId) {
@@ -38,7 +38,7 @@ public class FarmerFieldController extends Controller {
             FarmerField farmerField = new FarmerField();
             farmerField.farmerId = jsonNode.get("farmer_id").asInt();
             farmerField.desaId = jsonNode.get("desa_id").asInt();
-            farmerField.fieldArea = jsonNode.get("area").asDouble();
+            farmerField.fieldArea = jsonNode.get("field_area").asDouble();
             farmerField.ownershipStatus = jsonNode.get("ownership_status").asText();
             farmerField.isIrrigated = jsonNode.get("is_irrigated").asBoolean();
             farmerField.notes = jsonNode.has("notes")? jsonNode.get("notes").asText() : null;

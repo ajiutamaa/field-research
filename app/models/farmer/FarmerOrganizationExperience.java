@@ -34,7 +34,7 @@ public class FarmerOrganizationExperience {
     public static List<FarmerOrganizationExperience> select (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT organization_id AS organizationId, farmer_id AS farmerId, type, name, position, year_joined, activity_description " +
+                "SELECT organization_id AS organizationId, farmer_id AS farmerId, type, name, position, year_joined AS yearJoined, activity_description AS description " +
                 "FROM farmer_organization_experience WHERE farmer_id = :farmerId";
             return con.createQuery(sql).addParameter("farmerId", farmerId)
                     .executeAndFetch(FarmerOrganizationExperience.class);
@@ -44,7 +44,7 @@ public class FarmerOrganizationExperience {
     public static FarmerOrganizationExperience selectOne (int organizationId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT organization_id AS organizationId, farmer_id AS farmerId, type, name, position, year_joined, activity_description " +
+                "SELECT organization_id AS organizationId, farmer_id AS farmerId, type, name, position, year_joined AS yearJoined, activity_description AS description " +
                 "FROM farmer_organization_experience WHERE organization_id = :organizationId";
             return con.createQuery(sql).addParameter("organizationId", organizationId)
                     .executeAndFetchFirst(FarmerOrganizationExperience.class);
@@ -54,7 +54,7 @@ public class FarmerOrganizationExperience {
     public static int insert (FarmerOrganizationExperience farmerWorkshopExperience) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "INSERT INTO farmer_asset (farmer_id, type, name, position, year_joined, activity_description) " +
+                "INSERT INTO farmer_organization_experience (farmer_id, type, name, position, year_joined, activity_description) " +
                 "VALUES (:farmerId, :type, :name, :position, :yearJoined, :description)";
             return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerWorkshopExperience.farmerId)
@@ -71,7 +71,7 @@ public class FarmerOrganizationExperience {
     public static int update (FarmerOrganizationExperience farmerWorkshopExperience) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "UPDATE farmer_asset SET type = :type, name = :name, position = :position, year_joined = :yearJoined, " +
+                "UPDATE farmer_organization_experience SET type = :type, name = :name, position = :position, year_joined = :yearJoined, " +
                 "activity_description = :description, updated_at = CURRENT_TIMESTAMP WHERE organization_id = :organizationId";
             return con.createQuery(sql)
                     .addParameter("organizationId", farmerWorkshopExperience.organizationId)
@@ -88,7 +88,7 @@ public class FarmerOrganizationExperience {
     public static int delete (int organizationId) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "DELETE FROM farmer_organization_experience WHERE organization_id = :organizationId";
-            return con.createQuery(sql).addParameter("farmerId", organizationId).executeUpdate().getResult();
+            return con.createQuery(sql).addParameter("organizationId", organizationId).executeUpdate().getResult();
         }
     }
 }
