@@ -69,7 +69,7 @@ public class FarmerFieldController extends Controller {
             }
 
             farmerField.desaId = (jsonNode.has("desa_id"))? jsonNode.get("desa_id").asInt() : farmerField.desaId;
-            farmerField.fieldArea = (jsonNode.has("area"))? jsonNode.get("area").asDouble() : farmerField.fieldArea;
+            farmerField.fieldArea = (jsonNode.has("field_area"))? jsonNode.get("field_area").asDouble() : farmerField.fieldArea;
             farmerField.ownershipStatus = (jsonNode.has("ownership_status"))? jsonNode.get("ownership_status").asText() : farmerField.ownershipStatus;
             farmerField.isIrrigated = (jsonNode.has("is_irrigated"))? jsonNode.get("is_irrigated").asBoolean() : farmerField.isIrrigated;
             farmerField.notes = (jsonNode.has("notes"))? jsonNode.get("notes").asText() : farmerField.notes;

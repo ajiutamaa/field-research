@@ -65,5 +65,12 @@ POST           /farmer/harvest/insert             controllers.farmer.FarmerHarve
 POST           /farmer/harvest/update             controllers.farmer.FarmerHarvestController.updateFarmerHarvest()
 POST           /farmer/harvest/delete             controllers.farmer.FarmerHarvestController.deleteFarmerHarvest()
 
+# Farmer Field Visit
+GET            /farmer/fieldVisit/find            controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit()
+GET            /farmer/fieldVisitDetail/find      controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisitDetail(farmer_field_visit_id:Int)
+GET            /farmer/weeklyVisit/find           controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
+
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET            /assets/*file                      controllers.Assets.versioned(path="/public", file)
