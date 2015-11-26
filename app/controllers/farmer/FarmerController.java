@@ -2,9 +2,12 @@ package controllers.farmer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
+import helpers.security.Secured;
 import models.farmer.Farmer;
+import models.field_visit.FarmerFieldVisit;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import static play.libs.Json.toJson;
 /**
  * Created by lenovo on 11/5/2015.
  */
+@Security.Authenticated(Secured.class)
 public class FarmerController extends Controller {
     private static final String[] FIELD_INSERT_FARMER = {"farmer_name", "cluster_group_id", "kkv_group_id", "desa_id", "observation_date"};
     private static final String[] FIELD_FARMER = {"farmer_id"};
@@ -22,6 +26,16 @@ public class FarmerController extends Controller {
         Map<String, Object> result = new HashMap<>();
         try {
             return ok(toJson(Farmer.select()));
+        } catch (Exception e) {
+            result.put("message", e.getMessage());
+            return internalServerError (toJson(result));
+        }
+    }
+
+    public static Result findUnssignedFarmer () {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            return ok(toJson(FarmerFieldVisit.selectUnassignedFarmer()));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError (toJson(result));

@@ -2,9 +2,11 @@ package controllers.farmer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
+import helpers.security.Secured;
 import models.farmer.FarmerAsset;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,8 @@ import static play.libs.Json.toJson;
 /**
  * Created by lenovo on 11/5/2015.
  */
+
+@Security.Authenticated(Secured.class)
 public class FarmerAssetController extends Controller {
     private static final String[] FIELD_INSERT_FARMER_ASSET = {"farmer_id", "type", "name", "ownership_status", "quantity"};
     private static final String[] FIELD_FARMER_ASSET = {"asset_id"};

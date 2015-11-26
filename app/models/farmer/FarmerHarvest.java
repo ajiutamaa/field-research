@@ -54,8 +54,8 @@ public class FarmerHarvest {
     public static int insert (FarmerHarvest farmerHarvest) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "INSERT INTO farmer_harvest_history (farmer_id, year, season, crop, field_area, yield) " +
-                "VALUES (:farmerId, :year, :season, :crop, :fieldArea, :yield)";
+                "INSERT INTO farmer_harvest_history (farmer_id, year, season, crop, field_area, yield, updated_at, created_at) " +
+                "VALUES (:farmerId, :year, :season, :crop, :fieldArea, :yield, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
             return con.createQuery(sql, true)
                     .addParameter("farmerId", farmerHarvest.farmerId)
                     .addParameter("year", farmerHarvest.year)

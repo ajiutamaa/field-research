@@ -1,0 +1,161 @@
+REST DOC
+?
+# Master
+GET           /master/provinsi             controllers.master.LocationController.findMasterProvinsi()
+GET           /master/kabupaten            controllers.master.LocationController.findMasterKabupaten(provinsi_id:Int)
+GET           /master/kecamatan            controllers.master.LocationController.findMasterKecamatan(kabupaten_id:Int)
+GET           /master/desa                 controllers.master.LocationController.findMasterDesa(kecamatan_id:Int)
+?
+# Farmer Group
+GET           /farmer/group/kkv            controllers.farmer.FarmerGroupController.findKkvGroup()
+GET           /farmer/group/cluster        controllers.farmer.FarmerGroupController.findClusterGroup()
+?
+# Farmer
+GET           /farmer               controllers.farmer.FarmerController.findFarmer()
+POST          /farmer               controllers.farmer.FarmerController.insertFarmer()
+	- farmer_name, string
+	- cluster_group_id, int
+	- kkv_group_id, int
+	- desa_id, int
+	- observation_date, date('yyyy-MM-dd')
+PUT           /farmer               controllers.farmer.FarmerController.updateFarmer()
+	- farmer_id, int
+DELETE        /farmer               controllers.farmer.FarmerController.deleteFarmer()
+	- farmer_id, int
+?
+# Farmer Detail
+GET           /farmer/detail        controllers.farmer.FarmerDetailController.findFarmerDetail(farmer_id:Int)
+POST          /farmer/detail        controllers.farmer.FarmerDetailController.insertFarmerDetail()
+	- farmer_id, int
+	- religion, string
+	- name_of_spouse, string
+	- number_of_dependants, int
+	- number_of_children, int
+	- residential_status, string
+	- date_of_birth, date('yyyy-MM-dd')
+	- ethnic_group, string
+	- years_of_corn_farming, int
+	- is_transmigrated, boolean
+PUT           /farmer/detail        controllers.farmer.FarmerDetailController.updateFarmerDetail()
+	- farmer_id, int
+DELETE        /farmer/detail        controllers.farmer.FarmerDetailController.deleteFarmerDetail()
+	- farmer_id, int
+?
+# Farmer Field
+GET           /farmer/field         controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
+POST          /farmer/field         controllers.farmer.FarmerIncomeController.insertFarmerIncome()
+	- farmer_id, int
+	- desa_id, int
+	- area, double
+	- ownership_status, string
+	- is_irrigated, boolean
+	- notes, string
+PUT           /farmer/field         controllers.farmer.FarmerIncomeController.updateFarmerIncome()
+	- field_id, int
+DELETE        /farmer/field         controllers.farmer.FarmerIncomeController.deleteFarmer()
+	- field_id, int
+?
+# Farmer Income
+GET           /farmer/income        controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
+POST          /farmer/income        controllers.farmer.FarmerIncomeController.insertFarmerIncome()
+	- farmer_id, int
+	- source, string
+	- amount, double
+PUT           /farmer/income        controllers.farmer.FarmerIncomeController.updateFarmerIncome()
+	- income_id, int
+DELETE        /farmer/income        controllers.farmer.FarmerIncomeController.deleteFarmer()
+	- income_id, int
+?
+# Farmer Asset
+GET           /farmer/asset                controllers.farmer.FarmerAssetController.findFarmerAsset(farmer_id:Int)
+POST          /farmer/asset                controllers.farmer.FarmerAssetController.insertFarmerAsset()
+	- farmer_id, int
+	- type, string
+	- name, string
+	- ownership_status, string
+	- quantity, int
+PUT           /farmer/asset                controllers.farmer.FarmerAssetController.updateFarmerAsset()
+	- asset_id, int
+DELETE        /farmer/asset                controllers.farmer.FarmerAssetController.deleteFarmerAsset()
+	- asset_id, int
+?
+# Farmer Workshop
+GET           /farmer/workshop             controllers.farmer.FarmerWorkshopController.findFarmerWorkshop(farmer_id:Int)
+POST          /farmer/workshop             controllers.farmer.FarmerWorkshopController.insertFarmerWorkshop()
+	- farmer_id, int
+	- type, string
+	- organizer, string
+	- year, int
+	- description, string
+PUT           /farmer/workshop             controllers.farmer.FarmerWorkshopController.updateFarmerWorkshop()
+	- workshop_id
+DELETE        /farmer/workshop             controllers.farmer.FarmerWorkshopController.deleteFarmerWorkshop()
+	- workshop_id
+?
+# Farmer Organization
+GET           /farmer/organization         controllers.farmer.FarmerOrganizationController.findFarmerOrganization(farmer_id:Int)
+POST          /farmer/organization         controllers.farmer.FarmerOrganizationController.insertFarmerOrganization()
+	- farmer_id, int
+	- type, string
+	- name, string
+	- position, string
+	- year_joined, int
+	- description, string
+PUT           /farmer/organization         controllers.farmer.FarmerOrganizationController.updateFarmerOrganization()
+	- organization_id, int
+DELETE        /farmer/organization         controllers.farmer.FarmerOrganizationController.deleteFarmerOrganization()
+	- organization_id, int
+?
+# Farmer Harvest
+GET           /farmer/harvest              controllers.farmer.FarmerHarvestController.findFarmerHarvest(farmer_id:Int)
+POST          /farmer/harvest              controllers.farmer.FarmerHarvestController.insertFarmerHarvest()
+	- farmer_id, int
+	- year, int
+	- season, string
+	- crop, string
+	- field_area, double
+	- yield, double
+PUT           /farmer/harvest              controllers.farmer.FarmerHarvestController.updateFarmerHarvest()
+	- harvest_id
+DELETE        /farmer/harvest              controllers.farmer.FarmerHarvestController.deleteFarmerHarvest()
+	- harvest_id
+
+GET            /farmer/fieldVisit/find            controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit()
+GET            /farmer/fieldVisitDetail/find      controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisitDetail(farmer_field_visit_id:Int)
+GET            /farmer/weeklyVisit/find           controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
+
+POST           /farmer/fieldVisit/insert                    controllers.field_visit.FarmerFieldVisitController.insertFarmerFieldVisit()
+    - farmer_id, int
+POST           /farmer/fieldPlantStageStart/insert          controllers.field_visit.FarmerFieldVisitController.insertPlantStageStart()
+    - farmer_field_visit_id, int
+    - plant_stage_type, int
+    - start_date, date('yyyy-MM-dd')
+POST           /farmer/fieldPlantStageEnd/insert            controllers.field_visit.FarmerFieldVisitController.insertPlantStageEnd()
+	- farmer_field_visit_id, int
+	- plant_stage_type
+	- end_date, date('yyyy-MM-dd')
+POST           /farmer/fieldWeeklyVisitReport/insert        controllers.field_visit.FarmerFieldVisitController.insertWeeklyVisitReport()
+	- farmer_field_visit_id, int
+	- observation_date, date('yyyy-MM-dd')
+POST           /farmer/fieldWeeklyPlantSample/insert        controllers.field_visit.FarmerFieldVisitController.insertWeeklyPlantSample()
+	- weekly_visit_id, int
+	- height, double
+	- number_of_leaf, int
+	- pest, string - boleh null
+	- pest_score, double - kalo pest ada gaboleh null
+	- desease, string - boleh null
+	- desease_score, double - kalo desease ada gaboleh null
+	- leaf_P1, double
+	- leaf_P2, double
+	- leaf_L, double
+
+POST           /farmer/fieldPlantStageStart/update          controllers.field_visit.FarmerFieldVisitController.updatePlantStageStart()
+POST           /farmer/fieldPlantStageEnd/update            controllers.field_visit.FarmerFieldVisitController.updatePlantStageEnd()
+POST           /farmer/fieldWeeklyVisitReport/update        controllers.field_visit.FarmerFieldVisitController.updateWeeklyVisitReport()
+POST           /farmer/fieldWeeklyPlantSample/update        controllers.field_visit.FarmerFieldVisitController.updateWeeklyPlantSample()
+
+POST           /farmer/fieldVisit/delete                    controllers.field_visit.FarmerFieldVisitController.deleteFarmerFieldVisit()
+POST           /farmer/fieldPlantStageStart/delete          controllers.field_visit.FarmerFieldVisitController.deletePlantStageStart()
+POST           /farmer/fieldPlantStageEnd/delete            controllers.field_visit.FarmerFieldVisitController.deletePlantStageEnd()
+POST           /farmer/fieldWeeklyVisitReport/delete        controllers.field_visit.FarmerFieldVisitController.deleteWeeklyVisitReport()
+POST           /farmer/fieldWeeklyPlantSample/delete        controllers.field_visit.FarmerFieldVisitController.deleteWeeklyPlantSample()

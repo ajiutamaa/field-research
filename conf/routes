@@ -2,75 +2,96 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-OPTIONS        /*all                              controllers.Application.preflight(all:String)
+OPTIONS        /*all                                        controllers.Application.preflight(all:String)
 
 # Home page
-GET            /                                  controllers.Application.hello()
+GET            /                                            controllers.Application.hello()
+
+# Security
+POST           /register                                    controllers.user.SecurityController.register()
+POST           /login                                       controllers.user.SecurityController.login()
+POST           /logout                                      controllers.user.SecurityController.logout()
 
 # Master
-GET            /master/provinsi                   controllers.master.LocationController.findMasterProvinsi()
-GET            /master/kabupaten                  controllers.master.LocationController.findMasterKabupaten(provinsi_id:Int)
-GET            /master/kecamatan                  controllers.master.LocationController.findMasterKecamatan(kabupaten_id:Int)
-GET            /master/desa                       controllers.master.LocationController.findMasterDesa(kecamatan_id:Int)
+GET            /master/provinsi                             controllers.master.LocationController.findMasterProvinsi()
+GET            /master/kabupaten                            controllers.master.LocationController.findMasterKabupaten(provinsi_id:Int?=(-1))
+GET            /master/kecamatan                            controllers.master.LocationController.findMasterKecamatan(kabupaten_id:Int?=(-1))
+GET            /master/desa                                 controllers.master.LocationController.findMasterDesa(kecamatan_id:Int?=(-1))
 
 # Farmer Group
-GET            /farmer/group/kkv                  controllers.farmer.FarmerGroupController.findKkvGroup()
-GET            /farmer/group/cluster              controllers.farmer.FarmerGroupController.findClusterGroup()
+GET            /farmer/group/kkv                            controllers.farmer.FarmerGroupController.findKkvGroup()
+GET            /farmer/group/cluster                        controllers.farmer.FarmerGroupController.findClusterGroup()
 
 # Farmer
-GET            /farmer/find                       controllers.farmer.FarmerController.findFarmer()
-POST           /farmer/insert                     controllers.farmer.FarmerController.insertFarmer()
-POST           /farmer/update                     controllers.farmer.FarmerController.updateFarmer()
-POST           /farmer/delete                     controllers.farmer.FarmerController.deleteFarmer()
+GET            /farmer/find                                 controllers.farmer.FarmerController.findFarmer()
+GET            /farmer/findUnassigned                       controllers.farmer.FarmerController.findUnssignedFarmer()
+POST           /farmer/insert                               controllers.farmer.FarmerController.insertFarmer()
+POST           /farmer/update                               controllers.farmer.FarmerController.updateFarmer()
+POST           /farmer/delete                               controllers.farmer.FarmerController.deleteFarmer()
 
 # Farmer Detail
-GET            /farmer/detail/find                controllers.farmer.FarmerDetailController.findFarmerDetail(farmer_id:Int)
-POST           /farmer/detail/insert              controllers.farmer.FarmerDetailController.insertFarmerDetail()
-POST           /farmer/detail/update              controllers.farmer.FarmerDetailController.updateFarmerDetail()
-POST           /farmer/detail/delete              controllers.farmer.FarmerDetailController.deleteFarmerDetail()
+GET            /farmer/detail/find                          controllers.farmer.FarmerDetailController.findFarmerDetail(farmer_id:Int)
+POST           /farmer/detail/insert                        controllers.farmer.FarmerDetailController.insertFarmerDetail()
+POST           /farmer/detail/update                        controllers.farmer.FarmerDetailController.updateFarmerDetail()
+POST           /farmer/detail/delete                        controllers.farmer.FarmerDetailController.deleteFarmerDetail()
 
 # Farmer Field
-GET            /farmer/field/find                 controllers.farmer.FarmerFieldController.findFarmerField(farmer_id:Int)
-POST           /farmer/field/insert               controllers.farmer.FarmerFieldController.insertFarmerField()
-POST           /farmer/field/update               controllers.farmer.FarmerFieldController.updateFarmerField()
-POST           /farmer/field/delete               controllers.farmer.FarmerFieldController.deleteFarmerField()
+GET            /farmer/field/find                           controllers.farmer.FarmerFieldController.findFarmerField(farmer_id:Int)
+POST           /farmer/field/insert                         controllers.farmer.FarmerFieldController.insertFarmerField()
+POST           /farmer/field/update                         controllers.farmer.FarmerFieldController.updateFarmerField()
+POST           /farmer/field/delete                         controllers.farmer.FarmerFieldController.deleteFarmerField()
 
 # Farmer Income
-GET            /farmer/income/find                controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
-POST           /farmer/income/insert              controllers.farmer.FarmerIncomeController.insertFarmerIncome()
-POST           /farmer/income/update              controllers.farmer.FarmerIncomeController.updateFarmerIncome()
-POST           /farmer/income/delete              controllers.farmer.FarmerIncomeController.deleteFarmerIncome()
+GET            /farmer/income/find                          controllers.farmer.FarmerIncomeController.findFarmerIncome(farmer_id:Int)
+POST           /farmer/income/insert                        controllers.farmer.FarmerIncomeController.insertFarmerIncome()
+POST           /farmer/income/update                        controllers.farmer.FarmerIncomeController.updateFarmerIncome()
+POST           /farmer/income/delete                        controllers.farmer.FarmerIncomeController.deleteFarmerIncome()
 
 # Farmer Asset
-GET            /farmer/asset/find                 controllers.farmer.FarmerAssetController.findFarmerAsset(farmer_id:Int)
-POST           /farmer/asset/insert               controllers.farmer.FarmerAssetController.insertFarmerAsset()
-POST           /farmer/asset/update               controllers.farmer.FarmerAssetController.updateFarmerAsset()
-POST           /farmer/asset/delete               controllers.farmer.FarmerAssetController.deleteFarmerAsset()
+GET            /farmer/asset/find                           controllers.farmer.FarmerAssetController.findFarmerAsset(farmer_id:Int)
+POST           /farmer/asset/insert                         controllers.farmer.FarmerAssetController.insertFarmerAsset()
+POST           /farmer/asset/update                         controllers.farmer.FarmerAssetController.updateFarmerAsset()
+POST           /farmer/asset/delete                         controllers.farmer.FarmerAssetController.deleteFarmerAsset()
 
 # Farmer Workshop
-GET            /farmer/workshop/find              controllers.farmer.FarmerWorkshopController.findFarmerWorkshop(farmer_id:Int)
-POST           /farmer/workshop/insert            controllers.farmer.FarmerWorkshopController.insertFarmerWorkshop()
-POST           /farmer/workshop/update            controllers.farmer.FarmerWorkshopController.updateFarmerWorkshop()
-POST           /farmer/workshop/delete            controllers.farmer.FarmerWorkshopController.deleteFarmerWorkshop()
+GET            /farmer/workshop/find                        controllers.farmer.FarmerWorkshopController.findFarmerWorkshop(farmer_id:Int)
+POST           /farmer/workshop/insert                      controllers.farmer.FarmerWorkshopController.insertFarmerWorkshop()
+POST           /farmer/workshop/update                      controllers.farmer.FarmerWorkshopController.updateFarmerWorkshop()
+POST           /farmer/workshop/delete                      controllers.farmer.FarmerWorkshopController.deleteFarmerWorkshop()
 
 # Farmer Organization
-GET            /farmer/organization/find          controllers.farmer.FarmerOrganizationController.findFarmerOrganization(farmer_id:Int)
-POST           /farmer/organization/insert        controllers.farmer.FarmerOrganizationController.insertFarmerOrganization()
-POST           /farmer/organization/update        controllers.farmer.FarmerOrganizationController.updateFarmerOrganization()
-POST           /farmer/organization/delete        controllers.farmer.FarmerOrganizationController.deleteFarmerOrganization()
+GET            /farmer/organization/find                    controllers.farmer.FarmerOrganizationController.findFarmerOrganization(farmer_id:Int)
+POST           /farmer/organization/insert                  controllers.farmer.FarmerOrganizationController.insertFarmerOrganization()
+POST           /farmer/organization/update                  controllers.farmer.FarmerOrganizationController.updateFarmerOrganization()
+POST           /farmer/organization/delete                  controllers.farmer.FarmerOrganizationController.deleteFarmerOrganization()
 
 # Farmer Harvest
-GET            /farmer/harvest/find               controllers.farmer.FarmerHarvestController.findFarmerHarvest(farmer_id:Int)
-POST           /farmer/harvest/insert             controllers.farmer.FarmerHarvestController.insertFarmerHarvest()
-POST           /farmer/harvest/update             controllers.farmer.FarmerHarvestController.updateFarmerHarvest()
-POST           /farmer/harvest/delete             controllers.farmer.FarmerHarvestController.deleteFarmerHarvest()
+GET            /farmer/harvest/find                         controllers.farmer.FarmerHarvestController.findFarmerHarvest(farmer_id:Int)
+POST           /farmer/harvest/insert                       controllers.farmer.FarmerHarvestController.insertFarmerHarvest()
+POST           /farmer/harvest/update                       controllers.farmer.FarmerHarvestController.updateFarmerHarvest()
+POST           /farmer/harvest/delete                       controllers.farmer.FarmerHarvestController.deleteFarmerHarvest()
 
 # Farmer Field Visit
-GET            /farmer/fieldVisit/find            controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit()
-GET            /farmer/fieldVisitDetail/find      controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisitDetail(farmer_field_visit_id:Int)
-GET            /farmer/weeklyVisit/find           controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
+GET            /farmer/fieldVisit/find                      controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit()
+GET            /farmer/fieldVisitDetail/find                controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisitDetail(farmer_field_visit_id:Int)
+GET            /farmer/weeklyVisit/find                     controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
 
+POST           /farmer/fieldVisit/insert                    controllers.field_visit.FarmerFieldVisitController.insertFarmerFieldVisit()
+POST           /farmer/fieldPlantStageStart/insert          controllers.field_visit.FarmerFieldVisitController.insertPlantStageStart()
+POST           /farmer/fieldPlantStageEnd/insert            controllers.field_visit.FarmerFieldVisitController.insertPlantStageEnd()
+POST           /farmer/fieldWeeklyVisitReport/insert        controllers.field_visit.FarmerFieldVisitController.insertWeeklyVisitReport()
+POST           /farmer/fieldWeeklyPlantSample/insert        controllers.field_visit.FarmerFieldVisitController.insertWeeklyPlantSample()
 
+POST           /farmer/fieldPlantStageStart/update          controllers.field_visit.FarmerFieldVisitController.updatePlantStageStart()
+POST           /farmer/fieldPlantStageEnd/update            controllers.field_visit.FarmerFieldVisitController.updatePlantStageEnd()
+POST           /farmer/fieldWeeklyVisitReport/update        controllers.field_visit.FarmerFieldVisitController.updateWeeklyVisitReport()
+POST           /farmer/fieldWeeklyPlantSample/update        controllers.field_visit.FarmerFieldVisitController.updateWeeklyPlantSample()
+
+POST           /farmer/fieldVisit/delete                    controllers.field_visit.FarmerFieldVisitController.deleteFarmerFieldVisit()
+POST           /farmer/fieldPlantStageStart/delete          controllers.field_visit.FarmerFieldVisitController.deletePlantStageStart()
+POST           /farmer/fieldPlantStageEnd/delete            controllers.field_visit.FarmerFieldVisitController.deletePlantStageEnd()
+POST           /farmer/fieldWeeklyVisitReport/delete        controllers.field_visit.FarmerFieldVisitController.deleteWeeklyVisitReport()
+POST           /farmer/fieldWeeklyPlantSample/delete        controllers.field_visit.FarmerFieldVisitController.deleteWeeklyPlantSample()
 
 # Map static resources from the /public folder to the /assets URL path
-GET            /assets/*file                      controllers.Assets.versioned(path="/public", file)
+GET            /assets/*file                                controllers.Assets.versioned(path="/public", file)

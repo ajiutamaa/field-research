@@ -20,12 +20,17 @@ public class PlantStageStart {
     @JsonProperty("start_date")
     public Date startDate;
 
-    public static List<PlantStageStart> select (int farmerFieldVisitId) {
+    public static List<PlantStageStart> select (String plantStageType, int farmerFieldVisitId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "SELECT farmer_field_visit_id AS farmerFieldVisitId, plant_stage_type AS plantStageType, start_date AS startDate " +
-                            "FROM plant_stage_start WHERE farmer_field_visit_id = :farmerFieldVisitId";
-            return con.createQuery(sql).addParameter("farmerFieldVisitId", farmerFieldVisitId).executeAndFetch(PlantStageStart.class);
+                "SELECT farmer_field_visit_id AS farmerFieldVisitId, plant_stage_type AS plantStageType, start_date AS startDate " +
+                "FROM plant_stage_start WHERE " +
+                    "farmer_field_visit_id = :farmerFieldVisitId AND " +
+                    "(:plantStageType IS NULL OR lower(plant_stage_type) = lower(:plantStageType))";
+            return con.createQuery(sql)
+                    .addParameter("farmerFieldVisitId", farmerFieldVisitId)
+                    .addParameter("plantStageType", plantStageType)
+                    .executeAndFetch(PlantStageStart.class);
         }
     }
 

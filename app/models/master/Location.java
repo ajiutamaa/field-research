@@ -63,7 +63,7 @@ public class Location {
         try (Connection con = DB.sql2o.open()) {
             String sql =
                 "SELECT id AS kabupatenId, name AS kabupatenName, code AS kabupatenCode, provinsi_id AS provinsiId " +
-                "FROM master_kabupaten WHERE provinsi_id = :provinsiId";
+                "FROM master_kabupaten WHERE :provinsi_id = -1 OR provinsi_id = :provinsiId";
             return con.createQuery(sql)
                     .addParameter("provinsiId", provinsiId)
                     .executeAndFetch(MasterKabupaten.class);
@@ -74,7 +74,7 @@ public class Location {
         try (Connection con = DB.sql2o.open()) {
             String sql =
                 "SELECT id AS kecamatanId, name AS kecamatanName, code AS kecamatanCode, kabupaten_id AS kabupatenId " +
-                "FROM master_kecamatan WHERE kabupaten_id = :kabupatenId";
+                "FROM master_kecamatan WHERE :kabupatenId = -1 OR kabupaten_id = :kabupatenId";
             return con.createQuery(sql)
                     .addParameter("kabupatenId", kabupatenId)
                     .executeAndFetch(MasterKecamatan.class);
@@ -85,7 +85,7 @@ public class Location {
         try (Connection con = DB.sql2o.open()) {
             String sql =
                 "SELECT id AS desaId, name AS desaName, code AS desaCode, kecamatan_id AS kecamatanId " +
-                "FROM master_desa WHERE kecamatan_id = :kecamatanId";
+                "FROM master_desa WHERE :kecamatanId = -1 OR kecamatan_id = :kecamatanId";
             return con.createQuery(sql)
                     .addParameter("kecamatanId", kecamatanId)
                     .executeAndFetch(MasterDesa.class);

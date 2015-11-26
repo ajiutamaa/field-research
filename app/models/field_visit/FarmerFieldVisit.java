@@ -2,6 +2,7 @@ package models.field_visit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import helpers.DB;
+import models.farmer.Farmer;
 import models.field_visit.PlantStageEnd;
 import models.field_visit.PlantStageStart;
 import models.field_visit.WeeklyVisitReport;
@@ -82,7 +83,13 @@ public class FarmerFieldVisit {
         public List<WeeklyVisitReport> listWeeklyVisit;
     }
 
+    public class FarmerSimple {
+        @JsonProperty("farmer_id")
+        public int farmer_id;
 
+        @JsonProperty("farmer_name")
+        public String farmer_name;
+    }
 
     public static List<FieldVisit> select () {
         try (Connection con = DB.sql2o.open()) {
@@ -96,6 +103,14 @@ public class FarmerFieldVisit {
                     "f.cluster_group_id = c.id AND " +
                     "f.kkv_group_id = kkv.id";
             return con.createQuery(sql).executeAndFetch(FieldVisit.class);
+        }
+    }
+
+    public static List<FarmerSimple> selectUnassignedFarmer () {
+        try (Connection con = DB.sql2o.open()) {
+            String sql =
+                "SELECT f.id AS farmer_id, f.name AS farmer_name FROM farmer f WHERE NOT EXISTS (SELECT * FROM farmer_field_visit v WHERE v.farmer_id = f.id)";
+            return con.createQuery(sql).executeAndFetch(FarmerSimple.class);
         }
     }
 
@@ -119,15 +134,15 @@ public class FarmerFieldVisit {
             detail.plantStageStart = new HashMap<String, Object>();
             detail.plantStageEnd = new HashMap<String, Object>();
 
-            for (PlantStageStart plantStageStart : PlantStageStart.select(detail.farmerFieldVisitId)) {
+            for (PlantStageStart plantStageStart : PlantStageStart.select(null, detail.farmerFieldVisitId)) {
                 detail.plantStageStart.put(plantStageStart.plantStageType, plantStageStart.startDate);
             }
 
-            for (PlantStageEnd plantStageEnd : PlantStageEnd.select(detail.farmerFieldVisitId)) {
+            for (PlantStageEnd plantStageEnd : PlantStageEnd.select(null, detail.farmerFieldVisitId)) {
                 detail.plantStageEnd.put(plantStageEnd.plantStageType, plantStageEnd.endDate);
             }
 
-            detail.listWeeklyVisit = WeeklyVisitReport.select(detail.farmerFieldVisitId);
+            detail.listWeeklyVisit = WeeklyVisitReport.select(-1, detail.farmerFieldVisitId);
 
             return detail;
         }

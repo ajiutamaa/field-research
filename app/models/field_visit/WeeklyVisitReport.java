@@ -23,16 +23,22 @@ public class WeeklyVisitReport {
     @JsonProperty("plant_sample_list")
     public List<WeeklyPlantSample> listPlantSample;
 
-    public static List<WeeklyVisitReport> select (int farmerFieldVisitId) {
+    @JsonProperty("notes")
+    public String notes;
+
+    public static List<WeeklyVisitReport> select (int weeklyVisitId, int farmerFieldVisitId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "SELECT weekly_visit_id AS weeklyVisitId, farmer_field_visit_id AS farmerFieldVisitId, observation_date AS observationDate " +
-                            "FROM weekly_visit_report WHERE farmer_field_visit_id = :farmerFieldVisitId";
+                "SELECT weekly_visit_id AS weeklyVisitId, farmer_field_visit_id AS farmerFieldVisitId, observation_date AS observationDate, notes " +
+                "FROM weekly_visit_report WHERE " +
+                    "(:farmerFieldVisitId = -1 OR farmer_field_visit_id = :farmerFieldVisitId) AND " +
+                    "(:weeklyVisitId = -1 OR weekly_visit_id = :weeklyVisitId)";
             List<WeeklyVisitReport> weeklyReports = con.createQuery(sql)
                     .addParameter("farmerFieldVisitId", farmerFieldVisitId)
+                    .addParameter("weeklyVisitId", weeklyVisitId)
                     .executeAndFetch(WeeklyVisitReport.class);
             for (WeeklyVisitReport weeklyReport : weeklyReports) {
-                weeklyReport.listPlantSample = WeeklyPlantSample.select(weeklyReport.weeklyVisitId);
+                weeklyReport.listPlantSample = WeeklyPlantSample.select(-1, weeklyReport.weeklyVisitId);
             }
 
             return weeklyReports;
@@ -42,11 +48,12 @@ public class WeeklyVisitReport {
     public static int insert (WeeklyVisitReport weeklyVisit) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "INSERT INTO weekly_visit_report (farmer_field_visit_id, observation_date) VALUES " +
-                            "(:farmerFieldVisitId, :observationDate)";
+                    "INSERT INTO weekly_visit_report (farmer_field_visit_id, observation_date, notes) VALUES " +
+                            "(:farmerFieldVisitId, :observationDate, :notes)";
             return con.createQuery(sql, true)
                     .addParameter("farmerFieldVisitId", weeklyVisit.farmerFieldVisitId)
                     .addParameter("observationDate", weeklyVisit.observationDate)
+                    .addParameter("notes", weeklyVisit.notes)
                     .executeUpdate()
                     .getKey(Integer.class);
         }
@@ -55,10 +62,11 @@ public class WeeklyVisitReport {
     public static int update (WeeklyVisitReport weeklyVisitReport) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                    "UPDATE weekly_visit_report SET observation_date = :observationDate WHERE weekly_visit_id = :weeklyVisitId";
+                    "UPDATE weekly_visit_report SET observation_date = :observationDate, notes = :notes WHERE weekly_visit_id = :weeklyVisitId";
             return con.createQuery(sql)
                     .addParameter("weeklyVisitId", weeklyVisitReport.weeklyVisitId)
                     .addParameter("observationDate", weeklyVisitReport.observationDate)
+                    .addParameter("notes", weeklyVisitReport.notes)
                     .executeUpdate()
                     .getResult();
         }
