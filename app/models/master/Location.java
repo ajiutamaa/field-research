@@ -63,7 +63,7 @@ public class Location {
         try (Connection con = DB.sql2o.open()) {
             String sql =
                 "SELECT id AS kabupatenId, name AS kabupatenName, code AS kabupatenCode, provinsi_id AS provinsiId " +
-                "FROM master_kabupaten WHERE :provinsi_id = -1 OR provinsi_id = :provinsiId";
+                "FROM master_kabupaten WHERE :provinsiId = -1 OR provinsi_id = :provinsiId";
             return con.createQuery(sql)
                     .addParameter("provinsiId", provinsiId)
                     .executeAndFetch(MasterKabupaten.class);
