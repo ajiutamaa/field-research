@@ -8,7 +8,9 @@ import models.field_visit.PlantStageStart;
 import models.field_visit.WeeklyVisitReport;
 import org.sql2o.Connection;
 import play.Logger;
+import play.libs.F;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
@@ -43,6 +45,9 @@ public class FarmerFieldVisit {
 
         @JsonProperty("desa_name")
         public String desaName;
+
+        @JsonProperty("polygon")
+        public ArrayList<HashMap<String, Double>> polygon;
     }
 
     public class FieldVisitDetail {
@@ -81,6 +86,9 @@ public class FarmerFieldVisit {
 
         @JsonProperty("weekly_visit_list")
         public List<WeeklyVisitReport> listWeeklyVisit;
+
+        @JsonProperty("polygon")
+        public ArrayList<HashMap<String, Double>> polygon;
     }
 
     public class FarmerSimple {
@@ -102,7 +110,11 @@ public class FarmerFieldVisit {
                     "f.desa_id = ds.id AND " +
                     "f.cluster_group_id = c.id AND " +
                     "f.kkv_group_id = kkv.id";
-            return con.createQuery(sql).executeAndFetch(FieldVisit.class);
+            List<FieldVisit> fieldVisits = con.createQuery(sql).executeAndFetch(FieldVisit.class);
+            for (FieldVisit fieldVisit : fieldVisits) {
+                fieldVisit.polygon = selectFieldPolygon(fieldVisit.farmerId);
+            }
+            return fieldVisits;
         }
     }
 
@@ -131,6 +143,8 @@ public class FarmerFieldVisit {
 
             if (detail == null) return detail;
 
+            detail.polygon = selectFieldPolygon(detail.farmerId);
+
             detail.plantStageStart = new HashMap<String, Object>();
             detail.plantStageEnd = new HashMap<String, Object>();
 
@@ -148,6 +162,25 @@ public class FarmerFieldVisit {
         }
     }
 
+    public static ArrayList<HashMap<String, Double>> selectFieldPolygon (int farmerId) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT ST_AsText(polygon) FROM farmer_field_visit WHERE farmer_id = :farmerId";
+            String polygon = con.createQuery(sql).addParameter("farmerId", farmerId).executeScalar(String.class);
+            if (polygon == null) return null;
+            polygon = polygon.replace("(","").replace(")","").replace("POLYGON","");
+            ArrayList<HashMap<String, Double>> longLatList = new ArrayList();
+            for (String point : polygon.split(",")) {
+                String longitude = (point.split(" "))[0];
+                String latitude = (point.split(" "))[1];
+                HashMap<String, Double> map = new HashMap<>();
+                map.put("longitude", Double.parseDouble(longitude));
+                map.put("latitude", Double.parseDouble(latitude));
+                longLatList.add(map);
+            }
+            return longLatList;
+        }
+    }
+
     public static int insert (int farmerId) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO farmer_field_visit (farmer_id) VALUES (:farmerId)";
@@ -155,6 +188,27 @@ public class FarmerFieldVisit {
                     .addParameter("farmerId", farmerId)
                     .executeUpdate()
                     .getKey(Integer.class);
+        }
+    }
+
+    public static int insertPolygon (int farmerId, List<F.Tuple<Double, Double>> longLatList) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "UPDATE farmer_field_visit SET polygon = ST_GeographyFromText('POLYGON((";
+            int counter = 0;
+            for (F.Tuple<Double, Double> longLat : longLatList) {
+                if (counter == 0) {
+                    sql = sql + longLat._1 + " " + longLat._2;
+                } else {
+                    sql = sql + ", " + longLat._1 + " " + longLat._2;
+                }
+                counter++;
+            }
+            sql = sql + "))') WHERE farmer_id = :farmerId";
+
+            return con.createQuery(sql)
+                    .addParameter("farmerId", farmerId)
+                    .executeUpdate()
+                    .getResult();
         }
     }
 

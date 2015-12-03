@@ -77,6 +77,7 @@ GET            /farmer/fieldVisitDetail/find                controllers.field_vi
 GET            /farmer/weeklyVisit/find                     controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
 
 POST           /farmer/fieldVisit/insert                    controllers.field_visit.FarmerFieldVisitController.insertFarmerFieldVisit()
+POST           /farmer/fieldVisit/updatePolygon             controllers.field_visit.FarmerFieldVisitController.updateFieldPolygon()
 POST           /farmer/fieldPlantStageStart/insert          controllers.field_visit.FarmerFieldVisitController.insertPlantStageStart()
 POST           /farmer/fieldPlantStageEnd/insert            controllers.field_visit.FarmerFieldVisitController.insertPlantStageEnd()
 POST           /farmer/fieldWeeklyVisitReport/insert        controllers.field_visit.FarmerFieldVisitController.insertWeeklyVisitReport()

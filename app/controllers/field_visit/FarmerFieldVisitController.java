@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
 import helpers.security.Secured;
 import models.field_visit.*;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,8 @@ public class FarmerFieldVisitController extends Controller {
     private static final String[] UPDATE_PLANT_STAGE_END = {"farmer_field_visit_id", "plant_stage_type"};
     private static final String[] UPDATE_WEEKLY_REPORT = {"weekly_visit_id"};
     private static final String[] UPDATE_WEEKLY_SAMPLE = {"weekly_plant_sample_id"};
+    private static final String[] UPDATE_FIELD_POLYGON = {"farmer_id", "polygon"};
+    private static final String[] POLYGON_FIELD = {"longitude", "latitude"};
 
     private static final String[] DELETE_FARMER_FIELD_VISIT = {"farmer_id"};
 
@@ -249,6 +253,37 @@ public class FarmerFieldVisitController extends Controller {
 
             result.put("message", "field stage end " + plantStageEnd.plantStageType + " updated");
             return ok(toJson(result));
+        } catch (Exception e) {
+            result.put("message", e.getMessage());
+            return badRequest(toJson(result));
+        }
+    }
+
+    public static Result updateFieldPolygon () {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            JsonNode jsonNode = Controller.request().body().asJson();
+            InputValidator inputValidator = new InputValidator();
+            inputValidator.checkInputFields(jsonNode, UPDATE_FIELD_POLYGON);
+
+            int farmerId = jsonNode.get("farmer_id").asInt();
+
+            ArrayList<F.Tuple<Double, Double>> longLatList = new ArrayList();
+
+            for (JsonNode node : jsonNode.get("polygon")) {
+                inputValidator.checkInputFields(node, POLYGON_FIELD);
+                double longitude = node.get("longitude").asDouble();
+                double latitude = node.get("latitude").asDouble();
+                longLatList.add(new F.Tuple<>(longitude, latitude));
+            }
+
+            if (FarmerFieldVisit.insertPolygon(farmerId, longLatList) < 1) {
+                result.put("message", "error updating");
+                return internalServerError(toJson(result));
+            } else {
+                result.put("message", "field polygon updated");
+                return ok(toJson(result));
+            }
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return badRequest(toJson(result));
