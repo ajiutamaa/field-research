@@ -72,8 +72,10 @@ public class WeeklyVisitReport {
         }
     }
 
-    public static int delete (int weeklyVisitId) {
+    public static int delete (int weeklyVisitId) throws Exception {
         try (Connection con = DB.sql2o.open()) {
+            // delete file of field visit
+            FarmerFieldVisitFile.delete(weeklyVisitId, null);
             String sql =
                     "DELETE FROM weekly_visit_report WHERE weekly_visit_id = :weeklyVisitId";
             return con.createQuery(sql)
