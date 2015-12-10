@@ -28,9 +28,9 @@ public class FarmerFieldVisitFilesController extends Controller {
     public static Result findFilesPath (int weeklyVisitId, String description) {
         Map<String, Object> result = new HashMap<>(5);
         try {
-            result.put("farmer_id", weeklyVisitId);
             for (FarmerFieldVisitFile file : FarmerFieldVisitFile.select(weeklyVisitId, description)) {
                 Map<String, Object> fileInfo = new HashMap<>(5);
+		fileInfo.put("weekly_visit_id", weeklyVisitId);
                 fileInfo.put("file_id", file.id);
                 fileInfo.put("path", file.path);
                 fileInfo.put("status", file.status);

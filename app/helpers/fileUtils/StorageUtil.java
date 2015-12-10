@@ -53,8 +53,8 @@ public class StorageUtil {
         result.put("width", bufferedImage.getWidth());
         result.put("size", (image.length() / (1024.0)));
 
-        if ((double) result.get("size") > 1000) {
-            throw new IOException("File is larger than 1 MB");
+        if ((double) result.get("size") > 10000) {
+            throw new IOException("File is larger than 10 MB");
         }
 
         FileUtils.moveFile(image, newFile);
