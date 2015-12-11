@@ -11,6 +11,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +54,8 @@ public class SecurityController extends Controller {
             InputValidator inputValidator = new InputValidator();
             inputValidator.checkInputFields(jsonNode, FIELD_REGISTER_LOGIN);
 
+            Date currTime = new Date(System.currentTimeMillis());
+
             String username = jsonNode.get("username").asText();
             String password = jsonNode.get("password").asText();
             password = Base64.getEncoder().encodeToString(password.getBytes());
@@ -63,7 +66,13 @@ public class SecurityController extends Controller {
                 result.put("message", "invalid username or password");
                 return unauthorized(toJson(result));
             } else {
-                String authToken = user.generateToken();
+                String authToken = null;
+                if (currTime.before(user.tokenExp)) {
+                    authToken = user.token;
+                    user.updateTokenExp();
+                } else {
+                    authToken = user.generateToken();
+                }
 
                 Map<String, Object> fullToken = new HashMap<String, Object>();
                 fullToken.put("user_id", user.userId);

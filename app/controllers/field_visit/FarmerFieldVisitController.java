@@ -28,7 +28,7 @@ public class FarmerFieldVisitController extends Controller {
     private static final String[] INSERT_PLANT_STAGE_START = {"farmer_field_visit_id", "plant_stage_type", "start_date"};
     private static final String[] INSERT_PLANT_STAGE_END = {"farmer_field_visit_id", "plant_stage_type", "end_date"};
     private static final String[] INSERT_WEEKLY_REPORT = {"farmer_field_visit_id", "observation_date"};
-    private static final String[] INSERT_WEEKLY_SAMPLE = {"weekly_visit_id", "height", "number_of_leaf", "leaf_P1", "leaf_P2", "leaf_L"};
+    private static final String[] INSERT_WEEKLY_SAMPLE = {"weekly_visit_id", "height", "number_of_leaf"};
 
     private static final String[] UPDATE_PLANT_STAGE_START = {"farmer_field_visit_id", "plant_stage_type"};
     private static final String[] UPDATE_PLANT_STAGE_END = {"farmer_field_visit_id", "plant_stage_type"};
@@ -177,12 +177,12 @@ public class FarmerFieldVisitController extends Controller {
             weeklyPlantSample.height = jsonNode.get("height").asDouble();
             weeklyPlantSample.numberOfLeaf = jsonNode.get("number_of_leaf").asInt();
             weeklyPlantSample.pest = (jsonNode.has("pest"))? jsonNode.get("pest").asText() : null;
-            weeklyPlantSample.pestScore = (jsonNode.has("pest_score"))? jsonNode.get("pest_score").asDouble() : 0;
+            weeklyPlantSample.pestScore = (jsonNode.has("pest_score"))? jsonNode.get("pest_score").asDouble() : null;
             weeklyPlantSample.desease = (jsonNode.has("desease"))? jsonNode.get("desease").asText() : null;
-            weeklyPlantSample.deseaseScore = (jsonNode.has("desease_score"))? jsonNode.get("desease_score").asDouble() : 0;
-            weeklyPlantSample.leafP1 = jsonNode.get("leaf_P1").asDouble();
-            weeklyPlantSample.leafP2 = jsonNode.get("leaf_P2").asDouble();
-            weeklyPlantSample.leafL = jsonNode.get("leaf_L").asDouble();
+            weeklyPlantSample.deseaseScore = (jsonNode.has("desease_score"))? jsonNode.get("desease_score").asDouble() : null;
+            weeklyPlantSample.leafP1 = jsonNode.has("leaf_P1")? jsonNode.get("leaf_P1").asDouble() : null;
+            weeklyPlantSample.leafP2 = jsonNode.has("leaf_P2")? jsonNode.get("leaf_P2").asDouble() : null;
+            weeklyPlantSample.leafL = jsonNode.has("leaf_L")? jsonNode.get("leaf_L").asDouble() : null;
 
             int weeklyPlantSampleId = WeeklyPlantSample.insert(weeklyPlantSample);
 

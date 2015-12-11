@@ -215,10 +215,14 @@ public class FarmerFieldVisit {
     public static int delete (int farmerId) throws Exception {
         try (Connection con = DB.sql2o.open()) {
             // delete files
-            String sqlGetFarmerId = "SELECT farmer_field_visit_id FROM farmer_field_visit WHERE farmer_id = :farmerId";
-            int farmerFieldVisitId = con.createQuery(sqlGetFarmerId).addParameter("farmerId", farmerId).executeScalar(Integer.class);
-            for (WeeklyVisitReport weeklyVisitReport : WeeklyVisitReport.select(-1, farmerFieldVisitId)) {
-                FarmerFieldVisitFile.delete(weeklyVisitReport.weeklyVisitId, null);
+            try {
+                String sqlGetFarmerId = "SELECT farmer_field_visit_id FROM farmer_field_visit WHERE farmer_id = :farmerId";
+                int farmerFieldVisitId = con.createQuery(sqlGetFarmerId).addParameter("farmerId", farmerId).executeScalar(Integer.class);
+                for (WeeklyVisitReport weeklyVisitReport : WeeklyVisitReport.select(-1, farmerFieldVisitId)) {
+                    FarmerFieldVisitFile.delete(weeklyVisitReport.weeklyVisitId, null);
+                }
+            } catch (Exception e) {
+                // do nothing
             }
 
             String sql = "DELETE FROM farmer_field_visit WHERE farmer_id = :farmerId";

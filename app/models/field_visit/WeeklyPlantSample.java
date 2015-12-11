@@ -11,37 +11,37 @@ import java.util.List;
  */
 public class WeeklyPlantSample {
     @JsonProperty("weekly_plant_sample_id")
-    public int weeklyPlantSampleId;
+    public Integer weeklyPlantSampleId;
 
     @JsonProperty("weekly_visit_id")
-    public int weeklyVisitId;
+    public Integer weeklyVisitId;
 
     @JsonProperty("height")
-    public double height;
+    public Double height;
 
     @JsonProperty("number_of_leaf")
-    public int numberOfLeaf;
+    public Integer numberOfLeaf;
 
     @JsonProperty("pest")
     public String pest;
 
     @JsonProperty("pest_score")
-    public double pestScore;
+    public Double pestScore;
 
     @JsonProperty("desease")
     public String desease;
 
     @JsonProperty("desease_score")
-    public double deseaseScore;
+    public Double deseaseScore;
 
     @JsonProperty("leaf_P1")
-    public double leafP1;
+    public Double leafP1;
 
     @JsonProperty("leaf_P2")
-    public double leafP2;
+    public Double leafP2;
 
     @JsonProperty("leaf_L")
-    public double leafL;
+    public Double leafL;
 
     public static List<WeeklyPlantSample> select (int weeklyPlantSampleId, int weeklyVisitId) {
         try (Connection con = DB.sql2o.open()) {
