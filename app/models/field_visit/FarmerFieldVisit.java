@@ -121,7 +121,7 @@ public class FarmerFieldVisit {
     public static List<FarmerSimple> selectUnassignedFarmer () {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT f.id AS farmer_id, f.name AS farmer_name FROM farmer f WHERE NOT EXISTS (SELECT * FROM farmer_field_visit v WHERE v.farmer_id = f.id)";
+                "SELECT f.id AS farmer_id, f.name AS farmer_name FROM farmer f WHERE NOT EXISTS (SELECT * FROM farmer_field_visit v WHERE v.farmer_id = f.id) ORDER BY farmer_name";
             return con.createQuery(sql).executeAndFetch(FarmerSimple.class);
         }
     }
