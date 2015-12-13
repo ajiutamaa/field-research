@@ -67,7 +67,7 @@ public class SecurityController extends Controller {
                 return unauthorized(toJson(result));
             } else {
                 String authToken = null;
-                if (currTime.before(user.tokenExp)) {
+                if (user.token != null && user.tokenExp != null && currTime.before(user.tokenExp)) {
                     authToken = user.token;
                     user.updateTokenExp();
                 } else {
