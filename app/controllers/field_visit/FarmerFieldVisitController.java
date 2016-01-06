@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static play.libs.Json.toJson;
-import play.Logger;
 import play.mvc.Security;
 
 /**
