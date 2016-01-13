@@ -40,7 +40,7 @@ public class FieldSensorController extends Controller {
             }
 
             FieldSensorRecord.sensorRecordInsert(recordList);
-            
+
             result.put("message", recordList.size() + " sensor data records successfully inserted");
             return ok(toJson(result));
         } catch (Exception e) {
