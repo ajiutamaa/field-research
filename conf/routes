@@ -72,7 +72,7 @@ POST           /farmer/harvest/update                                     contro
 POST           /farmer/harvest/delete                                     controllers.farmer.FarmerHarvestController.deleteFarmerHarvest()
 
 # Farmer Field Visit
-GET            /farmer/fieldVisit/find                                    controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit()
+GET            /farmer/fieldVisit/find                                    controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisit(season_id:Int?=(-1))
 GET            /farmer/fieldVisitDetail/find                              controllers.field_visit.FarmerFieldVisitController.findFarmerFieldVisitDetail(farmer_field_visit_id:Int)
 GET            /farmer/weeklyVisit/find                                   controllers.field_visit.FarmerFieldVisitController.findWeeklyVisit(farmer_field_visit_id:Int)
 

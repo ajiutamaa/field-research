@@ -19,6 +19,12 @@ import java.util.Date;
  */
 public class FarmerFieldVisit {
     public class FieldVisit {
+        @JsonProperty("season_id")
+        public int seasonId;
+
+        @JsonProperty("season_code")
+        public String seasonCode;
+
         @JsonProperty("farmer_field_visit_id")
         public int farmerFieldVisitId;
 
@@ -99,18 +105,23 @@ public class FarmerFieldVisit {
         public String farmer_name;
     }
 
-    public static List<FieldVisit> select () {
+    public static List<FieldVisit> select (int seasonId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT v.farmer_field_visit_id AS farmerFieldVisitId, v.farmer_id AS farmerId, f.name AS farmerName, " +
+                "SELECT season.season_id as seasonId, season.season_code AS seasonCode, " +
+                    "v.farmer_field_visit_id AS farmerFieldVisitId, v.farmer_id AS farmerId, f.name AS farmerName, " +
                     "ds.id AS desaId, ds.name AS desaName, c.id AS clusterGroupId, c.name AS clusterGroupName, " +
                     "kkv.id AS kkvGroupId, kkv.name AS kkvGroupName " +
-                "FROM farmer_field_visit v, farmer f, master_desa ds, cluster_group c, farmer_kkv_group kkv " +
-                "WHERE v.farmer_id = f.id AND " +
+                "FROM farmer_field_visit v, farmer f, master_desa ds, master_season season, cluster_group c, farmer_kkv_group kkv " +
+                "WHERE (:seasonId = -1 OR v.season_id = :seasonId) AND " +
+                    "v.farmer_id = f.id AND " +
+                    "v.season_id = season.season_id AND " +
                     "f.desa_id = ds.id AND " +
                     "f.cluster_group_id = c.id AND " +
                     "f.kkv_group_id = kkv.id";
-            List<FieldVisit> fieldVisits = con.createQuery(sql).executeAndFetch(FieldVisit.class);
+            List<FieldVisit> fieldVisits = con.createQuery(sql)
+                    .addParameter("seasonId", seasonId)
+                    .executeAndFetch(FieldVisit.class);
             for (FieldVisit fieldVisit : fieldVisits) {
                 fieldVisit.polygon = selectFieldPolygon(fieldVisit.farmerId);
             }
@@ -181,17 +192,18 @@ public class FarmerFieldVisit {
         }
     }
 
-    public static int insert (int farmerId) {
+    public static int insert (int seasonId, int farmerId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO farmer_field_visit (farmer_id) VALUES (:farmerId)";
+            String sql = "INSERT INTO farmer_field_visit (season_id, farmer_id) VALUES (:seasonId, :farmerId)";
             return con.createQuery(sql, true)
+                    .addParameter("seasonId", seasonId)
                     .addParameter("farmerId", farmerId)
                     .executeUpdate()
                     .getKey(Integer.class);
         }
     }
 
-    public static int insertPolygon (int farmerId, List<F.Tuple<Double, Double>> longLatList) {
+    public static int insertPolygon (int seasonId, int farmerId, List<F.Tuple<Double, Double>> longLatList) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "UPDATE farmer_field_visit SET polygon = ST_GeographyFromText('POLYGON((";
             int counter = 0;
@@ -203,21 +215,24 @@ public class FarmerFieldVisit {
                 }
                 counter++;
             }
-            sql = sql + "))') WHERE farmer_id = :farmerId";
+            sql = sql + "))') WHERE season_id = :seasonId AND farmer_id = :farmerId";
 
             return con.createQuery(sql)
+                    .addParameter("seasonId", seasonId)
                     .addParameter("farmerId", farmerId)
                     .executeUpdate()
                     .getResult();
         }
     }
 
-    public static int delete (int farmerId) throws Exception {
+    public static int delete (int seasonId, int farmerId) throws Exception {
         try (Connection con = DB.sql2o.open()) {
             // delete files
             try {
-                String sqlGetFarmerId = "SELECT farmer_field_visit_id FROM farmer_field_visit WHERE farmer_id = :farmerId";
-                int farmerFieldVisitId = con.createQuery(sqlGetFarmerId).addParameter("farmerId", farmerId).executeScalar(Integer.class);
+                String sqlGetFarmerId = "SELECT farmer_field_visit_id FROM farmer_field_visit WHERE season_id = :seasonId AND farmer_id = :farmerId";
+                int farmerFieldVisitId = con.createQuery(sqlGetFarmerId)
+                        .addParameter("seasonId", seasonId)
+                        .addParameter("farmerId", farmerId).executeScalar(Integer.class);
                 for (WeeklyVisitReport weeklyVisitReport : WeeklyVisitReport.select(-1, farmerFieldVisitId)) {
                     FarmerFieldVisitFile.delete(weeklyVisitReport.weeklyVisitId, null);
                 }
@@ -225,8 +240,10 @@ public class FarmerFieldVisit {
                 // do nothing
             }
 
-            String sql = "DELETE FROM farmer_field_visit WHERE farmer_id = :farmerId";
-            return con.createQuery(sql).addParameter("farmerId", farmerId).executeUpdate().getResult();
+            String sql = "DELETE FROM farmer_field_visit WHERE season_id = :seasonId AND farmer_id = :farmerId";
+            return con.createQuery(sql)
+                    .addParameter("seasonId", seasonId)
+                    .addParameter("farmerId", farmerId).executeUpdate().getResult();
         }
     }
 }

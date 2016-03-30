@@ -23,7 +23,7 @@ import play.mvc.Security;
 
 @Security.Authenticated(Secured.class)
 public class FarmerFieldVisitController extends Controller {
-    private static final String[] INSERT_FARMER_FIELD_VISIT = {"farmer_id"};
+    private static final String[] INSERT_FARMER_FIELD_VISIT = {"farmer_id", "season_id"};
     private static final String[] INSERT_PLANT_STAGE_START = {"farmer_field_visit_id", "plant_stage_type", "start_date"};
     private static final String[] INSERT_PLANT_STAGE_END = {"farmer_field_visit_id", "plant_stage_type", "end_date"};
     private static final String[] INSERT_WEEKLY_REPORT = {"farmer_field_visit_id", "observation_date"};
@@ -33,15 +33,15 @@ public class FarmerFieldVisitController extends Controller {
     private static final String[] UPDATE_PLANT_STAGE_END = {"farmer_field_visit_id", "plant_stage_type"};
     private static final String[] UPDATE_WEEKLY_REPORT = {"weekly_visit_id"};
     private static final String[] UPDATE_WEEKLY_SAMPLE = {"weekly_plant_sample_id"};
-    private static final String[] UPDATE_FIELD_POLYGON = {"farmer_id", "polygon"};
+    private static final String[] UPDATE_FIELD_POLYGON = {"farmer_id", "polygon", "season_id"};
     private static final String[] POLYGON_FIELD = {"longitude", "latitude"};
 
-    private static final String[] DELETE_FARMER_FIELD_VISIT = {"farmer_id"};
+    private static final String[] DELETE_FARMER_FIELD_VISIT = {"farmer_id", "season_id"};
 
-    public static Result findFarmerFieldVisit () {
+    public static Result findFarmerFieldVisit (int seasonId) {
         Map<String, Object> result = new HashMap<>();
         try {
-            return ok(toJson(FarmerFieldVisit.select()));
+            return ok(toJson(FarmerFieldVisit.select(seasonId)));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError (toJson(result));
@@ -76,8 +76,9 @@ public class FarmerFieldVisitController extends Controller {
             inputValidator.checkInputFields(jsonNode, INSERT_FARMER_FIELD_VISIT);
 
             int farmerId = jsonNode.get("farmer_id").asInt();
+            int seasonId = jsonNode.get("season_id").asInt();
 
-            int farmerFieldVisitId = FarmerFieldVisit.insert(farmerId);
+            int farmerFieldVisitId = FarmerFieldVisit.insert(seasonId, farmerId);
 
             result.put("id", farmerFieldVisitId);
             result.put("message", "farmer field visit inserted");
@@ -266,6 +267,7 @@ public class FarmerFieldVisitController extends Controller {
             inputValidator.checkInputFields(jsonNode, UPDATE_FIELD_POLYGON);
 
             int farmerId = jsonNode.get("farmer_id").asInt();
+            int seasonId = jsonNode.get("season_id").asInt();
 
             ArrayList<F.Tuple<Double, Double>> longLatList = new ArrayList();
 
@@ -276,7 +278,7 @@ public class FarmerFieldVisitController extends Controller {
                 longLatList.add(new F.Tuple<>(longitude, latitude));
             }
 
-            if (FarmerFieldVisit.insertPolygon(farmerId, longLatList) < 1) {
+            if (FarmerFieldVisit.insertPolygon(seasonId, farmerId, longLatList) < 1) {
                 result.put("message", "error updating");
                 return internalServerError(toJson(result));
             } else {
@@ -370,8 +372,9 @@ public class FarmerFieldVisitController extends Controller {
             inputValidator.checkInputFields(jsonNode, DELETE_FARMER_FIELD_VISIT);
 
             int farmerId = jsonNode.get("farmer_id").asInt();
+            int seasonId = jsonNode.get("season_id").asInt();
 
-            if (FarmerFieldVisit.delete(farmerId) < 1) {
+            if (FarmerFieldVisit.delete(seasonId, farmerId) < 1) {
                 result.put("message", "error during deletion");
                 return internalServerError(toJson(result));
             }
