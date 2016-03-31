@@ -32,10 +32,10 @@ public class FarmerController extends Controller {
         }
     }
 
-    public static Result findUnssignedFarmer () {
+    public static Result findUnssignedFarmer (int seasonId) {
         Map<String, Object> result = new HashMap<>();
         try {
-            return ok(toJson(FarmerFieldVisit.selectUnassignedFarmer()));
+            return ok(toJson(FarmerFieldVisit.selectUnassignedFarmer(seasonId)));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError (toJson(result));

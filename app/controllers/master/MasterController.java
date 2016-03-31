@@ -2,6 +2,7 @@ package controllers.master;
 
 import helpers.security.Secured;
 import models.master.Location;
+import models.master.Season;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -16,7 +17,7 @@ import static play.libs.Json.toJson;
  */
 
 @Security.Authenticated(Secured.class)
-public class LocationController extends Controller{
+public class MasterController extends Controller{
     public static Result findMasterProvinsi () {
         Map<String, Object> result = new HashMap<>();
         try {
@@ -51,6 +52,16 @@ public class LocationController extends Controller{
         Map<String, Object> result = new HashMap<>();
         try {
             return ok(toJson(Location.selectDesa(kecamatanId)));
+        } catch (Exception e) {
+            result.put("message", e.getMessage());
+            return internalServerError (toJson(result));
+        }
+    }
+
+    public static Result findMasterSeason () {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            return ok(toJson(Season.select()));
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError (toJson(result));

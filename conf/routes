@@ -13,18 +13,18 @@ POST           /login                                                     contro
 POST           /logout                                                    controllers.user.SecurityController.logout()
 
 # Master
-GET            /master/provinsi                                           controllers.master.LocationController.findMasterProvinsi()
-GET            /master/kabupaten                                          controllers.master.LocationController.findMasterKabupaten(provinsi_id:Int?=(-1))
-GET            /master/kecamatan                                          controllers.master.LocationController.findMasterKecamatan(kabupaten_id:Int?=(-1))
-GET            /master/desa                                               controllers.master.LocationController.findMasterDesa(kecamatan_id:Int?=(-1))
-
+GET            /master/provinsi                                           controllers.master.MasterController.findMasterProvinsi()
+GET            /master/kabupaten                                          controllers.master.MasterController.findMasterKabupaten(provinsi_id:Int?=(-1))
+GET            /master/kecamatan                                          controllers.master.MasterController.findMasterKecamatan(kabupaten_id:Int?=(-1))
+GET            /master/desa                                               controllers.master.MasterController.findMasterDesa(kecamatan_id:Int?=(-1))
+GET            /master/season                                             controllers.master.MasterController.findMasterSeason()
 # Farmer Group
 GET            /farmer/group/kkv                                          controllers.farmer.FarmerGroupController.findKkvGroup()
 GET            /farmer/group/cluster                                      controllers.farmer.FarmerGroupController.findClusterGroup()
 
 # Farmer
 GET            /farmer/find                                               controllers.farmer.FarmerController.findFarmer()
-GET            /farmer/findUnassigned                                     controllers.farmer.FarmerController.findUnssignedFarmer()
+GET            /farmer/findUnassigned                                     controllers.farmer.FarmerController.findUnssignedFarmer(season_id:Int)
 POST           /farmer/insert                                             controllers.farmer.FarmerController.insertFarmer()
 POST           /farmer/update                                             controllers.farmer.FarmerController.updateFarmer()
 POST           /farmer/delete                                             controllers.farmer.FarmerController.deleteFarmer()

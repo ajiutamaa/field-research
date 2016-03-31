@@ -129,11 +129,16 @@ public class FarmerFieldVisit {
         }
     }
 
-    public static List<FarmerSimple> selectUnassignedFarmer () {
+    public static List<FarmerSimple> selectUnassignedFarmer (int seasonId) {
         try (Connection con = DB.sql2o.open()) {
             String sql =
-                "SELECT f.id AS farmer_id, f.name AS farmer_name FROM farmer f WHERE NOT EXISTS (SELECT * FROM farmer_field_visit v WHERE v.farmer_id = f.id) ORDER BY farmer_name";
-            return con.createQuery(sql).executeAndFetch(FarmerSimple.class);
+                "SELECT f.id AS farmer_id, f.name AS farmer_name FROM farmer f " +
+                "WHERE NOT EXISTS " +
+                    "(SELECT * FROM farmer_field_visit v WHERE v.farmer_id = f.id AND v.season_id = :seasonId) " +
+                "ORDER BY farmer_name";
+            return con.createQuery(sql)
+                    .addParameter("seasonId", seasonId)
+                    .executeAndFetch(FarmerSimple.class);
         }
     }
 

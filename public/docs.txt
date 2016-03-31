@@ -1,10 +1,10 @@
 REST DOC
 ?
 # Master
-GET           /master/provinsi             controllers.master.LocationController.findMasterProvinsi()
-GET           /master/kabupaten            controllers.master.LocationController.findMasterKabupaten(provinsi_id:Int)
-GET           /master/kecamatan            controllers.master.LocationController.findMasterKecamatan(kabupaten_id:Int)
-GET           /master/desa                 controllers.master.LocationController.findMasterDesa(kecamatan_id:Int)
+GET           /master/provinsi             controllers.master.MasterController.findMasterProvinsi()
+GET           /master/kabupaten            controllers.master.MasterController.findMasterKabupaten(provinsi_id:Int)
+GET           /master/kecamatan            controllers.master.MasterController.findMasterKecamatan(kabupaten_id:Int)
+GET           /master/desa                 controllers.master.MasterController.findMasterDesa(kecamatan_id:Int)
 ?
 # Farmer Group
 GET           /farmer/group/kkv            controllers.farmer.FarmerGroupController.findKkvGroup()
