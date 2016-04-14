@@ -1,5 +1,6 @@
 package models.field_visit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import helpers.DB;
 import models.farmer.Farmer;
@@ -59,6 +60,9 @@ public class FarmerFieldVisit {
     public class FieldVisitDetail {
         @JsonProperty("farmer_field_visit_id")
         public int farmerFieldVisitId;
+
+        @JsonIgnore
+        public int seasonId;
 
         @JsonProperty("farmer_id")
         public int farmerId;
@@ -123,7 +127,7 @@ public class FarmerFieldVisit {
                     .addParameter("seasonId", seasonId)
                     .executeAndFetch(FieldVisit.class);
             for (FieldVisit fieldVisit : fieldVisits) {
-                fieldVisit.polygon = selectFieldPolygon(fieldVisit.farmerId);
+                fieldVisit.polygon = selectFieldPolygon(fieldVisit.farmerFieldVisitId, fieldVisit.seasonId);
             }
             return fieldVisits;
         }
@@ -147,7 +151,7 @@ public class FarmerFieldVisit {
             String sql =
                 "SELECT v.farmer_field_visit_id AS farmerFieldVisitId, v.farmer_id AS farmerId, f.name AS farmerName, " +
                 "ds.id AS desaId, ds.name AS desaName, c.id AS clusterGroupId, c.name AS clusterGroupName, " +
-                "kkv.id AS kkvGroupId, kkv.name AS kkvGroupName " +
+                "kkv.id AS kkvGroupId, kkv.name AS kkvGroupName, v.season_id AS seasonId " +
                 "FROM farmer_field_visit v, farmer f, master_desa ds, cluster_group c, farmer_kkv_group kkv " +
                 "WHERE v.farmer_field_visit_id = :farmerFieldVisitId AND v.farmer_id = f.id AND " +
                 "f.desa_id = ds.id AND " +
@@ -159,7 +163,7 @@ public class FarmerFieldVisit {
 
             if (detail == null) return detail;
 
-            detail.polygon = selectFieldPolygon(detail.farmerId);
+            detail.polygon = selectFieldPolygon(farmerFieldVisitId, detail.seasonId);
 
             detail.plantStageStart = new HashMap<String, Object>();
             detail.plantStageEnd = new HashMap<String, Object>();
@@ -178,10 +182,15 @@ public class FarmerFieldVisit {
         }
     }
 
-    public static ArrayList<HashMap<String, Double>> selectFieldPolygon (int farmerId) {
+    public static ArrayList<HashMap<String, Double>> selectFieldPolygon (int fieldVisitId, int seasonId) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT ST_AsText(polygon) FROM farmer_field_visit WHERE farmer_id = :farmerId";
-            String polygon = con.createQuery(sql).addParameter("farmerId", farmerId).executeScalar(String.class);
+            String sql = "SELECT ST_AsText(polygon) FROM farmer_field_visit " +
+                    "WHERE farmer_field_visit_id = :fieldVisitId AND season_id = :seasonId";
+            String polygon = con.createQuery(sql)
+                    .addParameter("fieldVisitId", fieldVisitId)
+                    .addParameter("seasonId", seasonId)
+                    .executeScalar(String.class);
+
             if (polygon == null) return null;
             polygon = polygon.replace("(","").replace(")","").replace("POLYGON","");
             ArrayList<HashMap<String, Double>> longLatList = new ArrayList();
