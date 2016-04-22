@@ -20,13 +20,13 @@ import static play.libs.Json.toJson;
 public class Report extends Controller {
     private static final String FILEDIR = "/home/ajie/field-research/report/";
 
-    public static Result generateFarmerReport () {
+    public static Result generateFarmerReport (int seasonId) {
         Map<String, Object> result = new HashMap<>(1);
         try {
             String scriptFilePath = FILEDIR + "report.py";
             String reportFilePath = FILEDIR + "farmer_report.xlsx";
 
-            String command = "python " + scriptFilePath + " " + reportFilePath;
+            String command = "python " + scriptFilePath + " " + reportFilePath + " " + seasonId;
 
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
