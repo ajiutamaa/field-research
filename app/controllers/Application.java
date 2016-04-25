@@ -6,7 +6,7 @@ import static play.libs.Json.toJson;
 
 public class Application extends Controller {
     public static Result hello() {
-        return ok(toJson(WeeklyPlantSample.select(5468, -1)));
+        return ok("Hello");
     }
 
     public static Result preflight(String all) {
