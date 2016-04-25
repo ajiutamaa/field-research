@@ -20,6 +20,7 @@ import static play.libs.Json.toJson;
  */
 public class Report extends Controller {
     private static final String FILEDIR = "/var/www/field-research/report/";
+    private static final String TEMP = "/tmp/";
 
     public static Result generateFarmerReport (int seasonId) {
         Map<String, Object> result = new HashMap<>(1);
