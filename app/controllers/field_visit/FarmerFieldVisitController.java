@@ -349,7 +349,7 @@ public class FarmerFieldVisitController extends Controller {
             sample.deseaseScore = jsonNode.has("desease")? jsonNode.get("desease_score").asDouble() : sample.deseaseScore;
             sample.leafP1 = jsonNode.has("leaf_P1")? jsonNode.get("leaf_P1").asDouble() : sample.leafP1;
             sample.leafP2 = jsonNode.has("leaf_P2")? jsonNode.get("leaf_P2").asDouble() : sample.leafP2;
-            sample.leafL = jsonNode.has("leafL")? jsonNode.get("leaf_L").asDouble() : sample.leafL;
+            sample.leafL = jsonNode.has("leaf_L")? jsonNode.get("leaf_L").asDouble() : sample.leafL;
 
             if (WeeklyPlantSample.update(sample) < 1) {
                 result.put("message", "error updating");
