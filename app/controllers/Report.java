@@ -1,6 +1,7 @@
 package controllers;
 
 import helpers.fileUtils.StorageUtil;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -18,7 +19,7 @@ import static play.libs.Json.toJson;
  * Created by 1199 on 2/10/2016.
  */
 public class Report extends Controller {
-    private static final String FILEDIR = "/home/ajie/field-research/report/";
+    private static final String FILEDIR = "/var/www/field-research/report/";
 
     public static Result generateFarmerReport (int seasonId) {
         Map<String, Object> result = new HashMap<>(1);
@@ -27,6 +28,8 @@ public class Report extends Controller {
             String reportFilePath = FILEDIR + "farmer_report.xlsx";
 
             String command = "python " + scriptFilePath + " " + reportFilePath + " " + seasonId;
+
+            Logger.debug(command);
 
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
