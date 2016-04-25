@@ -26,7 +26,7 @@ public class Report extends Controller {
         Map<String, Object> result = new HashMap<>(1);
         try {
             String scriptFilePath = FILEDIR + "report.py";
-            String reportFilePath = FILEDIR + "farmer_report.xlsx";
+            String reportFilePath = TEMP + "farmer_report.xlsx";
 
             String command = "python " + scriptFilePath + " " + reportFilePath + " " + seasonId;
 
