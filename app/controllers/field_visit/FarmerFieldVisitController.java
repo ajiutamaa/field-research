@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import helpers.InputValidator;
 import helpers.security.Secured;
 import models.field_visit.*;
+import play.Logger;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -339,17 +340,19 @@ public class FarmerFieldVisitController extends Controller {
                 return badRequest(toJson(result));
             }
 
+            Logger.debug(jsonNode.toString());
+
             WeeklyPlantSample sample = samples.get(0);
             sample.weeklyVisitId = jsonNode.has("weekly_visit_id")? jsonNode.get("weekly_visit_id").asInt() : sample.weeklyVisitId;
-            sample.height = jsonNode.has("height")? jsonNode.get("height").asDouble() : sample.height;
-            sample.numberOfLeaf = jsonNode.has("number_of_leaf")? jsonNode.get("number_of_leaf").asInt() : sample.numberOfLeaf;
+            if(jsonNode.has("height")) sample.height = jsonNode.get("height").asDouble();
+            if(jsonNode.has("number_of_leaf")) sample.numberOfLeaf = jsonNode.get("number_of_leaf").asInt();
             sample.pest = (jsonNode.has("pest"))? jsonNode.get("pest").asText() : sample.pest;
-            sample.pestScore = jsonNode.has("pest") ? jsonNode.get("pest_score").asDouble() : sample.pestScore;
             sample.desease = (jsonNode.has("desease"))? jsonNode.get("desease").asText() : sample.desease;
-            sample.deseaseScore = jsonNode.has("desease")? jsonNode.get("desease_score").asDouble() : sample.deseaseScore;
-            sample.leafP1 = jsonNode.has("leaf_P1")? jsonNode.get("leaf_P1").asDouble() : sample.leafP1;
-            sample.leafP2 = jsonNode.has("leaf_P2")? jsonNode.get("leaf_P2").asDouble() : sample.leafP2;
-            sample.leafL = jsonNode.has("leaf_L")? jsonNode.get("leaf_L").asDouble() : sample.leafL;
+            if (jsonNode.has("pest_score")) sample.pestScore = jsonNode.get("pest_score").asDouble();
+            if(jsonNode.has("desease")) sample.deseaseScore = jsonNode.get("desease_score").asDouble();
+            if(jsonNode.has("leaf_P1")) sample.leafP1 = jsonNode.get("leaf_P1").asDouble();
+            if(jsonNode.has("leaf_P2")) sample.leafP2 = jsonNode.get("leaf_P2").asDouble();
+            if(jsonNode.has("leaf_L")) sample.leafL =  jsonNode.get("leaf_L").asDouble();
 
             if (WeeklyPlantSample.update(sample) < 1) {
                 result.put("message", "error updating");

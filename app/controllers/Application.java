@@ -1,11 +1,12 @@
 package controllers;
 
+import models.field_visit.WeeklyPlantSample;
 import play.mvc.*;
 import static play.libs.Json.toJson;
 
 public class Application extends Controller {
     public static Result hello() {
-        return ok(toJson("hello"));
+        return ok(toJson(WeeklyPlantSample.select(5468, -1)));
     }
 
     public static Result preflight(String all) {
