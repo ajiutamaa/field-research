@@ -37,7 +37,10 @@ public class Report extends Controller {
 
             Path path = Paths.get(reportFilePath);
             File file = path.toFile();
-            file.renameTo(new File("AnalyticReport.xlsx"));
+
+            Logger.debug(reportFilePath);
+
+            //file.renameTo(new File("AnalyticReport.xlsx"));
             if (!file.exists()) {
                 throw new IOException("file does not exist");
             }
