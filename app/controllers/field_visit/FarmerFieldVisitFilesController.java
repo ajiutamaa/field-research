@@ -11,8 +11,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.zip.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -84,6 +84,43 @@ public class FarmerFieldVisitFilesController extends Controller {
             response().setContentType(Files.probeContentType(path));
             byte [] fileBinaries = StorageUtil.readFileBinaries(file);
             return ok(fileBinaries);
+        } catch (Exception e) {
+            result.put("message", e.getMessage());
+            return internalServerError(toJson(result));
+        }
+    }
+
+    public static Result sendFarmerZippedFiles (int weeklyVisitId) {
+        Map<String, Object> result = new HashMap<>(1);
+        try {
+            String zippedFilename = FarmerFieldVisitFile.selectZippedFileName(weeklyVisitId);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ZipOutputStream out = new ZipOutputStream(bos);
+            for (FarmerFieldVisitFile visitFile : FarmerFieldVisitFile.select(weeklyVisitId, null)) {
+                String [] splits = visitFile.path.split("/");
+                String filePath = StorageUtil.rootDir + "/" + splits[3] + "/" + splits[4] + "/" + splits[5];
+                Path path = Paths.get(filePath);
+                File file = path.toFile();
+
+                FileInputStream in = new FileInputStream(file);
+
+                out.putNextEntry(new ZipEntry(visitFile.description + "_" + splits[5]));
+
+                /** specify a buffer size */
+                byte buffer [] = new byte[1024];
+                int len;
+
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                in.close();
+                out.closeEntry();
+            }
+            out.close();
+
+            response().setContentType("application/zip");
+            response().setHeader("Content-Disposition", "attachment; filename=" + zippedFilename + ".zip");
+            return ok(bos.toByteArray());
         } catch (Exception e) {
             result.put("message", e.getMessage());
             return internalServerError(toJson(result));

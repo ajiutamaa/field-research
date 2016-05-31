@@ -16,7 +16,6 @@ import java.util.Map;
  */
 public class StorageUtil {
     public static final String rootDir = "/Field-Visit-Files";
-
     public static String generateFileUrl(String farmerId, String description) {
         String encodedId = StorageSecurityUtil.encodeToString(farmerId);
         String encodedDesc = StorageSecurityUtil.encodeToString(description);

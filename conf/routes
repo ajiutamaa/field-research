@@ -95,6 +95,7 @@ POST           /farmer/fieldWeeklyVisitReport/delete                      contro
 POST           /farmer/fieldWeeklyPlantSample/delete                      controllers.field_visit.FarmerFieldVisitController.deleteWeeklyPlantSample()
 
 GET            /farmer/fieldWeeklyVisitReportFiles/:id/:desc/:file        controllers.field_visit.FarmerFieldVisitFilesController.sendFarmerFile(id:String, desc:String, file:String)
+GET            /farmer/fieldWeeklyVisitReportFiles/getZippedFiles         controllers.field_visit.FarmerFieldVisitFilesController.sendFarmerZippedFiles(weekly_visit_id:Int)
 GET            /farmer/fieldWeeklyVisitReportFiles/find                   controllers.field_visit.FarmerFieldVisitFilesController.findFilesPath(weekly_visit_id:Int, file_description:String?=null)
 POST           /farmer/fieldWeeklyVisitReportFiles/upload                 controllers.field_visit.FarmerFieldVisitFilesController.uploadFarmerFile(weekly_visit_id:Int, file_description:String)
 POST           /farmer/fieldWeeklyVisitReportFiles/delete                 controllers.field_visit.FarmerFieldVisitFilesController.deleteFarmerFile()

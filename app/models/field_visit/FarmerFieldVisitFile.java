@@ -5,6 +5,7 @@ import helpers.DB;
 import helpers.fileUtils.StorageUtil;
 import org.sql2o.Connection;
 import play.Logger;
+import play.libs.F;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +52,20 @@ public class FarmerFieldVisitFile {
                     .addParameter("weeklyVisitId", weeklyVisitId)
                     .addParameter("descRegex", descRegex)
                     .executeAndFetch(FarmerFieldVisitFile.class);
+        }
+    }
+
+    public static String selectZippedFileName (int weeklyVisitId) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql =
+                "SELECT farmer.name || '_' || report.observation_date AS filename " +
+                "FROM weekly_visit_report report, farmer_field_visit visit, farmer " +
+                "WHERE report.weekly_visit_id = :visitId AND " +
+                    "report.farmer_field_visit_id = visit.farmer_field_visit_id AND " +
+                    "visit.farmer_id = farmer.id";
+            return con.createQuery(sql)
+                    .addParameter("visitId", weeklyVisitId)
+                    .executeAndFetchFirst(String.class);
         }
     }
 
